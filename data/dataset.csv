@@ -1,0 +1,801 @@
+id,category,name,description,image_path
+1,Smartphone,Samsung Pro,"screen 8.8 inch
+memory 15 GB
+battery 8878 mAh
+operating system macOS",data/images/smartphone_3.jpg
+2,Laptop,Xiaomi Titan,"screen 15.4 inch
+memory 21 GB
+battery 2933 mAh
+operating system Android",data/images/laptop_2.jpg
+3,Tablet,Dell Ultra,"screen 7.9 inch
+memory 13 GB
+battery 7148 mAh
+operating system iOS",data/images/tablet_1.jpg
+4,Smartphone,Dell Max,"screen 12.9 inch
+memory 14 GB
+battery 9655 mAh
+operating system Android",data/images/smartphone_1.jpg
+5,Smartwatch,Apple Ultra,"screen 7.0 inch
+memory 16 GB
+battery 4086 mAh
+operating system macOS",data/images/smartwatch_2.jpg
+6,Smartwatch,Apple Max,"screen 8.8 inch
+memory 29 GB
+battery 4818 mAh
+operating system Windows 11",data/images/smartwatch_2.jpg
+7,Laptop,Apple Titan,"screen 13.0 inch
+memory 20 GB
+battery 7840 mAh
+operating system Windows 11",data/images/laptop_1.jpg
+8,Smartphone,Samsung Pro,"screen 15.0 inch
+memory 6 GB
+battery 4806 mAh
+operating system Android",data/images/smartphone_3.jpg
+9,Laptop,Lenovo Ultra,"screen 13.6 inch
+memory 32 GB
+battery 9849 mAh
+operating system iOS",data/images/laptop_3.jpg
+10,Smartphone,Sony X,"screen 6.1 inch
+memory 14 GB
+battery 8086 mAh
+operating system macOS",data/images/smartphone_2.jpg
+11,Tablet,Huawei Titan,"screen 6.4 inch
+memory 12 GB
+battery 7726 mAh
+operating system iOS",data/images/tablet_3.jpg
+12,Laptop,Xiaomi X,"screen 10.3 inch
+memory 28 GB
+battery 2435 mAh
+operating system Windows 11",data/images/laptop_2.jpg
+13,Smartphone,Lenovo Max,"screen 14.8 inch
+memory 11 GB
+battery 6642 mAh
+operating system iOS",data/images/smartphone_2.jpg
+14,Smartwatch,Dell Galaxy,"screen 10.6 inch
+memory 24 GB
+battery 4641 mAh
+operating system Windows 11",data/images/smartwatch_2.jpg
+15,Laptop,Xiaomi Ultra,"screen 8.2 inch
+memory 18 GB
+battery 8155 mAh
+operating system Android",data/images/laptop_2.jpg
+16,Tablet,Samsung Ultra,"screen 12.6 inch
+memory 25 GB
+battery 6231 mAh
+operating system iOS",data/images/tablet_2.jpg
+17,Smartphone,Lenovo Pro,"screen 11.3 inch
+memory 5 GB
+battery 7564 mAh
+operating system Windows 11",data/images/smartphone_3.jpg
+18,Tablet,Dell Titan,"screen 7.0 inch
+memory 27 GB
+battery 3421 mAh
+operating system iOS",data/images/tablet_1.jpg
+19,Laptop,Samsung Galaxy,"screen 5.6 inch
+memory 24 GB
+battery 9301 mAh
+operating system Windows 11",data/images/laptop_1.jpg
+20,Laptop,Huawei Elite,"screen 7.3 inch
+memory 21 GB
+battery 5497 mAh
+operating system Android",data/images/laptop_2.jpg
+21,Smartphone,Dell X,"screen 10.8 inch
+memory 22 GB
+battery 8852 mAh
+operating system Android",data/images/smartphone_2.jpg
+22,Laptop,Sony Titan,"screen 10.0 inch
+memory 15 GB
+battery 8152 mAh
+operating system iOS",data/images/laptop_1.jpg
+23,Tablet,Lenovo X,"screen 13.7 inch
+memory 26 GB
+battery 9003 mAh
+operating system iOS",data/images/tablet_3.jpg
+24,Smartphone,Dell Max,"screen 12.3 inch
+memory 20 GB
+battery 3571 mAh
+operating system Android",data/images/smartphone_3.jpg
+25,Tablet,Huawei X,"screen 9.2 inch
+memory 31 GB
+battery 8625 mAh
+operating system iOS",data/images/tablet_2.jpg
+26,Smartwatch,Samsung Elite,"screen 10.9 inch
+memory 18 GB
+battery 8464 mAh
+operating system Windows 11",data/images/smartwatch_3.jpg
+27,Smartphone,Samsung Ultra,"screen 10.3 inch
+memory 20 GB
+battery 4786 mAh
+operating system iOS",data/images/smartphone_2.jpg
+28,Laptop,Huawei Pro,"screen 14.1 inch
+memory 26 GB
+battery 5391 mAh
+operating system Windows 11",data/images/laptop_1.jpg
+29,Tablet,Dell Titan,"screen 8.8 inch
+memory 19 GB
+battery 7356 mAh
+operating system Android",data/images/tablet_3.jpg
+30,Smartphone,Sony Galaxy,"screen 12.6 inch
+memory 30 GB
+battery 6987 mAh
+operating system iOS",data/images/smartphone_2.jpg
+31,Smartwatch,Dell Ultra,"screen 8.1 inch
+memory 4 GB
+battery 9395 mAh
+operating system Windows 11",data/images/smartwatch_1.jpg
+32,Tablet,Lenovo Ultra,"screen 10.9 inch
+memory 21 GB
+battery 3888 mAh
+operating system Windows 11",data/images/tablet_1.jpg
+33,Smartphone,Xiaomi Titan,"screen 11.5 inch
+memory 11 GB
+battery 7051 mAh
+operating system iOS",data/images/smartphone_2.jpg
+34,Laptop,Samsung X,"screen 8.0 inch
+memory 31 GB
+battery 8095 mAh
+operating system Android",data/images/laptop_3.jpg
+35,Smartphone,Samsung Pro,"screen 12.2 inch
+memory 20 GB
+battery 2691 mAh
+operating system Windows 11",data/images/smartphone_3.jpg
+36,Tablet,Apple Galaxy,"screen 12.2 inch
+memory 28 GB
+battery 3528 mAh
+operating system Windows 11",data/images/tablet_3.jpg
+37,Laptop,Apple Titan,"screen 10.2 inch
+memory 25 GB
+battery 5089 mAh
+operating system Android",data/images/laptop_2.jpg
+38,Tablet,Samsung Galaxy,"screen 5.8 inch
+memory 9 GB
+battery 7093 mAh
+operating system iOS",data/images/tablet_3.jpg
+39,Tablet,Xiaomi Ultra,"screen 7.7 inch
+memory 24 GB
+battery 6665 mAh
+operating system macOS",data/images/tablet_2.jpg
+40,Tablet,Xiaomi X,"screen 13.9 inch
+memory 27 GB
+battery 6418 mAh
+operating system Windows 11",data/images/tablet_2.jpg
+41,Smartphone,Dell Max,"screen 5.0 inch
+memory 10 GB
+battery 3754 mAh
+operating system macOS",data/images/smartphone_1.jpg
+42,Laptop,Sony Pro,"screen 11.5 inch
+memory 25 GB
+battery 5420 mAh
+operating system macOS",data/images/laptop_3.jpg
+43,Laptop,Apple Elite,"screen 8.8 inch
+memory 21 GB
+battery 4140 mAh
+operating system Windows 11",data/images/laptop_1.jpg
+44,Smartphone,Samsung Galaxy,"screen 6.4 inch
+memory 26 GB
+battery 5118 mAh
+operating system macOS",data/images/smartphone_3.jpg
+45,Smartwatch,Dell Pro,"screen 13.9 inch
+memory 6 GB
+battery 2402 mAh
+operating system Android",data/images/smartwatch_2.jpg
+46,Smartwatch,Samsung Max,"screen 10.8 inch
+memory 4 GB
+battery 5813 mAh
+operating system iOS",data/images/smartwatch_1.jpg
+47,Smartphone,Dell Galaxy,"screen 6.7 inch
+memory 31 GB
+battery 5403 mAh
+operating system Windows 11",data/images/smartphone_3.jpg
+48,Tablet,Apple Galaxy,"screen 11.9 inch
+memory 17 GB
+battery 3585 mAh
+operating system Windows 11",data/images/tablet_2.jpg
+49,Laptop,Sony Max,"screen 11.4 inch
+memory 22 GB
+battery 8216 mAh
+operating system Windows 11",data/images/laptop_3.jpg
+50,Tablet,Huawei Titan,"screen 5.0 inch
+memory 24 GB
+battery 4850 mAh
+operating system Android",data/images/tablet_3.jpg
+51,Laptop,Dell Ultra,"screen 13.2 inch
+memory 7 GB
+battery 7458 mAh
+operating system macOS",data/images/laptop_3.jpg
+52,Smartphone,Dell Titan,"screen 6.1 inch
+memory 31 GB
+battery 4659 mAh
+operating system iOS",data/images/smartphone_3.jpg
+53,Tablet,Dell Titan,"screen 6.4 inch
+memory 16 GB
+battery 8880 mAh
+operating system iOS",data/images/tablet_2.jpg
+54,Smartphone,Sony Ultra,"screen 11.8 inch
+memory 14 GB
+battery 7939 mAh
+operating system Windows 11",data/images/smartphone_3.jpg
+55,Smartphone,Lenovo X,"screen 14.2 inch
+memory 22 GB
+battery 8634 mAh
+operating system macOS",data/images/smartphone_3.jpg
+56,Smartwatch,Xiaomi Max,"screen 8.9 inch
+memory 20 GB
+battery 5566 mAh
+operating system Android",data/images/smartwatch_1.jpg
+57,Smartwatch,Apple Ultra,"screen 6.8 inch
+memory 12 GB
+battery 6821 mAh
+operating system Windows 11",data/images/smartwatch_1.jpg
+58,Laptop,Apple Galaxy,"screen 11.8 inch
+memory 23 GB
+battery 7433 mAh
+operating system macOS",data/images/laptop_1.jpg
+59,Smartwatch,Dell Titan,"screen 7.8 inch
+memory 25 GB
+battery 7593 mAh
+operating system iOS",data/images/smartwatch_3.jpg
+60,Smartwatch,Huawei Elite,"screen 8.0 inch
+memory 11 GB
+battery 7427 mAh
+operating system Windows 11",data/images/smartwatch_2.jpg
+61,Smartphone,Dell Pro,"screen 5.6 inch
+memory 20 GB
+battery 5012 mAh
+operating system iOS",data/images/smartphone_3.jpg
+62,Smartphone,Samsung Galaxy,"screen 12.6 inch
+memory 21 GB
+battery 3250 mAh
+operating system Windows 11",data/images/smartphone_1.jpg
+63,Tablet,Samsung Galaxy,"screen 13.2 inch
+memory 18 GB
+battery 4337 mAh
+operating system iOS",data/images/tablet_3.jpg
+64,Smartwatch,Sony X,"screen 12.3 inch
+memory 17 GB
+battery 3222 mAh
+operating system iOS",data/images/smartwatch_3.jpg
+65,Laptop,Sony Elite,"screen 7.2 inch
+memory 18 GB
+battery 2609 mAh
+operating system macOS",data/images/laptop_2.jpg
+66,Smartwatch,Dell X,"screen 10.0 inch
+memory 24 GB
+battery 7348 mAh
+operating system Windows 11",data/images/smartwatch_1.jpg
+67,Smartphone,Xiaomi Galaxy,"screen 12.3 inch
+memory 7 GB
+battery 5897 mAh
+operating system macOS",data/images/smartphone_1.jpg
+68,Smartwatch,Sony Titan,"screen 11.2 inch
+memory 23 GB
+battery 7567 mAh
+operating system iOS",data/images/smartwatch_1.jpg
+69,Laptop,Apple Titan,"screen 15.2 inch
+memory 15 GB
+battery 6169 mAh
+operating system iOS",data/images/laptop_3.jpg
+70,Laptop,Lenovo Pro,"screen 8.2 inch
+memory 20 GB
+battery 8228 mAh
+operating system Windows 11",data/images/laptop_2.jpg
+71,Smartphone,Dell Galaxy,"screen 6.0 inch
+memory 18 GB
+battery 8693 mAh
+operating system macOS",data/images/smartphone_3.jpg
+72,Tablet,Sony X,"screen 8.1 inch
+memory 13 GB
+battery 6710 mAh
+operating system iOS",data/images/tablet_2.jpg
+73,Smartphone,Lenovo Galaxy,"screen 14.6 inch
+memory 14 GB
+battery 4870 mAh
+operating system Android",data/images/smartphone_2.jpg
+74,Tablet,Apple Pro,"screen 9.4 inch
+memory 14 GB
+battery 3704 mAh
+operating system iOS",data/images/tablet_3.jpg
+75,Smartwatch,Samsung Titan,"screen 7.8 inch
+memory 16 GB
+battery 4763 mAh
+operating system Android",data/images/smartwatch_2.jpg
+76,Smartwatch,Lenovo X,"screen 11.4 inch
+memory 32 GB
+battery 6871 mAh
+operating system macOS",data/images/smartwatch_1.jpg
+77,Smartwatch,Dell Galaxy,"screen 5.3 inch
+memory 26 GB
+battery 9867 mAh
+operating system iOS",data/images/smartwatch_3.jpg
+78,Smartphone,Dell X,"screen 5.7 inch
+memory 5 GB
+battery 3317 mAh
+operating system Windows 11",data/images/smartphone_2.jpg
+79,Laptop,Huawei Pro,"screen 7.1 inch
+memory 32 GB
+battery 9125 mAh
+operating system Android",data/images/laptop_3.jpg
+80,Smartwatch,Samsung Pro,"screen 13.6 inch
+memory 32 GB
+battery 9830 mAh
+operating system Android",data/images/smartwatch_2.jpg
+81,Tablet,Apple Elite,"screen 14.5 inch
+memory 9 GB
+battery 7834 mAh
+operating system Windows 11",data/images/tablet_1.jpg
+82,Laptop,Dell Ultra,"screen 14.9 inch
+memory 30 GB
+battery 7898 mAh
+operating system macOS",data/images/laptop_1.jpg
+83,Smartphone,Samsung Elite,"screen 14.6 inch
+memory 13 GB
+battery 3408 mAh
+operating system Windows 11",data/images/smartphone_1.jpg
+84,Smartwatch,Apple Elite,"screen 6.7 inch
+memory 19 GB
+battery 9533 mAh
+operating system iOS",data/images/smartwatch_3.jpg
+85,Smartphone,Dell Ultra,"screen 6.1 inch
+memory 6 GB
+battery 5713 mAh
+operating system iOS",data/images/smartphone_2.jpg
+86,Laptop,Sony Max,"screen 5.8 inch
+memory 27 GB
+battery 8482 mAh
+operating system macOS",data/images/laptop_3.jpg
+87,Smartphone,Huawei Elite,"screen 7.1 inch
+memory 32 GB
+battery 9111 mAh
+operating system iOS",data/images/smartphone_1.jpg
+88,Tablet,Dell Titan,"screen 13.4 inch
+memory 21 GB
+battery 7004 mAh
+operating system iOS",data/images/tablet_2.jpg
+89,Tablet,Samsung Elite,"screen 11.5 inch
+memory 25 GB
+battery 2012 mAh
+operating system macOS",data/images/tablet_2.jpg
+90,Smartwatch,Huawei X,"screen 6.7 inch
+memory 28 GB
+battery 2944 mAh
+operating system Windows 11",data/images/smartwatch_3.jpg
+91,Smartphone,Samsung Galaxy,"screen 5.2 inch
+memory 30 GB
+battery 6800 mAh
+operating system macOS",data/images/smartphone_1.jpg
+92,Smartwatch,Lenovo Galaxy,"screen 10.2 inch
+memory 17 GB
+battery 4923 mAh
+operating system macOS",data/images/smartwatch_2.jpg
+93,Tablet,Dell Titan,"screen 14.2 inch
+memory 20 GB
+battery 8550 mAh
+operating system iOS",data/images/tablet_3.jpg
+94,Tablet,Dell Max,"screen 5.8 inch
+memory 22 GB
+battery 5161 mAh
+operating system macOS",data/images/tablet_3.jpg
+95,Laptop,Apple Max,"screen 13.6 inch
+memory 15 GB
+battery 8705 mAh
+operating system macOS",data/images/laptop_3.jpg
+96,Tablet,Sony X,"screen 10.8 inch
+memory 18 GB
+battery 9710 mAh
+operating system Android",data/images/tablet_2.jpg
+97,Smartphone,Sony Ultra,"screen 15.4 inch
+memory 12 GB
+battery 2262 mAh
+operating system iOS",data/images/smartphone_3.jpg
+98,Laptop,Samsung X,"screen 13.8 inch
+memory 18 GB
+battery 9120 mAh
+operating system Windows 11",data/images/laptop_3.jpg
+99,Laptop,Samsung Ultra,"screen 5.7 inch
+memory 30 GB
+battery 6555 mAh
+operating system iOS",data/images/laptop_3.jpg
+100,Tablet,Samsung Ultra,"screen 5.3 inch
+memory 11 GB
+battery 6205 mAh
+operating system macOS",data/images/tablet_2.jpg
+101,Laptop,Dell X,"screen 11.5 inch
+memory 21 GB
+battery 5042 mAh
+operating system iOS",data/images/laptop_1.jpg
+102,Tablet,Samsung X,"screen 9.6 inch
+memory 24 GB
+battery 5553 mAh
+operating system iOS",data/images/tablet_2.jpg
+103,Smartwatch,Samsung Ultra,"screen 6.7 inch
+memory 8 GB
+battery 2876 mAh
+operating system Windows 11",data/images/smartwatch_2.jpg
+104,Smartwatch,Xiaomi Pro,"screen 11.4 inch
+memory 16 GB
+battery 2411 mAh
+operating system iOS",data/images/smartwatch_1.jpg
+105,Smartphone,Samsung Pro,"screen 9.7 inch
+memory 19 GB
+battery 2443 mAh
+operating system Android",data/images/smartphone_2.jpg
+106,Tablet,Xiaomi Pro,"screen 13.1 inch
+memory 25 GB
+battery 5976 mAh
+operating system Windows 11",data/images/tablet_2.jpg
+107,Tablet,Dell Elite,"screen 12.9 inch
+memory 7 GB
+battery 7412 mAh
+operating system Android",data/images/tablet_1.jpg
+108,Laptop,Lenovo Pro,"screen 12.0 inch
+memory 31 GB
+battery 2154 mAh
+operating system macOS",data/images/laptop_3.jpg
+109,Tablet,Huawei Max,"screen 13.1 inch
+memory 11 GB
+battery 4820 mAh
+operating system Windows 11",data/images/tablet_2.jpg
+110,Laptop,Xiaomi X,"screen 14.1 inch
+memory 24 GB
+battery 9739 mAh
+operating system Android",data/images/laptop_2.jpg
+111,Smartphone,Dell Titan,"screen 15.4 inch
+memory 20 GB
+battery 9930 mAh
+operating system macOS",data/images/smartphone_1.jpg
+112,Smartwatch,Sony Ultra,"screen 11.5 inch
+memory 9 GB
+battery 4529 mAh
+operating system iOS",data/images/smartwatch_3.jpg
+113,Smartphone,Huawei Elite,"screen 15.3 inch
+memory 27 GB
+battery 9350 mAh
+operating system Android",data/images/smartphone_3.jpg
+114,Laptop,Dell Max,"screen 9.4 inch
+memory 26 GB
+battery 3961 mAh
+operating system iOS",data/images/laptop_3.jpg
+115,Laptop,Samsung Galaxy,"screen 5.6 inch
+memory 20 GB
+battery 5279 mAh
+operating system Windows 11",data/images/laptop_1.jpg
+116,Tablet,Huawei Ultra,"screen 12.1 inch
+memory 25 GB
+battery 4183 mAh
+operating system iOS",data/images/tablet_2.jpg
+117,Smartphone,Sony Elite,"screen 8.1 inch
+memory 9 GB
+battery 7580 mAh
+operating system iOS",data/images/smartphone_3.jpg
+118,Laptop,Lenovo Max,"screen 9.0 inch
+memory 6 GB
+battery 6374 mAh
+operating system Windows 11",data/images/laptop_2.jpg
+119,Smartwatch,Dell Galaxy,"screen 12.6 inch
+memory 7 GB
+battery 3786 mAh
+operating system Windows 11",data/images/smartwatch_3.jpg
+120,Smartwatch,Dell Ultra,"screen 14.5 inch
+memory 18 GB
+battery 8128 mAh
+operating system Android",data/images/smartwatch_2.jpg
+121,Smartwatch,Huawei Galaxy,"screen 7.2 inch
+memory 12 GB
+battery 6862 mAh
+operating system Windows 11",data/images/smartwatch_1.jpg
+122,Smartwatch,Dell Elite,"screen 11.2 inch
+memory 18 GB
+battery 9338 mAh
+operating system iOS",data/images/smartwatch_2.jpg
+123,Smartphone,Huawei Elite,"screen 5.8 inch
+memory 22 GB
+battery 9091 mAh
+operating system Windows 11",data/images/smartphone_2.jpg
+124,Tablet,Lenovo X,"screen 14.1 inch
+memory 25 GB
+battery 4503 mAh
+operating system Windows 11",data/images/tablet_3.jpg
+125,Tablet,Dell Galaxy,"screen 14.6 inch
+memory 8 GB
+battery 4152 mAh
+operating system Android",data/images/tablet_2.jpg
+126,Smartwatch,Apple X,"screen 9.2 inch
+memory 28 GB
+battery 2299 mAh
+operating system macOS",data/images/smartwatch_3.jpg
+127,Smartwatch,Lenovo Titan,"screen 11.2 inch
+memory 18 GB
+battery 4761 mAh
+operating system Windows 11",data/images/smartwatch_1.jpg
+128,Smartwatch,Xiaomi Pro,"screen 12.7 inch
+memory 30 GB
+battery 9623 mAh
+operating system macOS",data/images/smartwatch_2.jpg
+129,Smartphone,Samsung Galaxy,"screen 6.7 inch
+memory 17 GB
+battery 8796 mAh
+operating system iOS",data/images/smartphone_2.jpg
+130,Tablet,Apple Titan,"screen 13.6 inch
+memory 27 GB
+battery 2207 mAh
+operating system Windows 11",data/images/tablet_1.jpg
+131,Smartphone,Samsung Titan,"screen 10.0 inch
+memory 16 GB
+battery 2574 mAh
+operating system Windows 11",data/images/smartphone_2.jpg
+132,Smartwatch,Samsung Elite,"screen 9.3 inch
+memory 5 GB
+battery 8320 mAh
+operating system macOS",data/images/smartwatch_2.jpg
+133,Smartphone,Sony Max,"screen 11.7 inch
+memory 22 GB
+battery 9022 mAh
+operating system iOS",data/images/smartphone_3.jpg
+134,Smartphone,Xiaomi Max,"screen 9.5 inch
+memory 13 GB
+battery 2829 mAh
+operating system iOS",data/images/smartphone_2.jpg
+135,Laptop,Huawei Pro,"screen 12.0 inch
+memory 15 GB
+battery 5272 mAh
+operating system macOS",data/images/laptop_3.jpg
+136,Smartwatch,Huawei Galaxy,"screen 10.0 inch
+memory 23 GB
+battery 5811 mAh
+operating system Windows 11",data/images/smartwatch_3.jpg
+137,Smartwatch,Dell Elite,"screen 11.6 inch
+memory 25 GB
+battery 5744 mAh
+operating system Windows 11",data/images/smartwatch_3.jpg
+138,Tablet,Lenovo Galaxy,"screen 8.6 inch
+memory 9 GB
+battery 5339 mAh
+operating system Android",data/images/tablet_3.jpg
+139,Smartphone,Huawei Pro,"screen 11.6 inch
+memory 17 GB
+battery 9016 mAh
+operating system macOS",data/images/smartphone_2.jpg
+140,Smartwatch,Lenovo X,"screen 13.0 inch
+memory 18 GB
+battery 8855 mAh
+operating system Android",data/images/smartwatch_3.jpg
+141,Smartwatch,Samsung Pro,"screen 8.8 inch
+memory 16 GB
+battery 3332 mAh
+operating system iOS",data/images/smartwatch_1.jpg
+142,Smartwatch,Apple Elite,"screen 10.9 inch
+memory 20 GB
+battery 5173 mAh
+operating system Android",data/images/smartwatch_1.jpg
+143,Tablet,Apple Elite,"screen 6.1 inch
+memory 29 GB
+battery 4023 mAh
+operating system macOS",data/images/tablet_2.jpg
+144,Tablet,Huawei Pro,"screen 15.1 inch
+memory 23 GB
+battery 7663 mAh
+operating system Android",data/images/tablet_2.jpg
+145,Tablet,Apple Ultra,"screen 13.2 inch
+memory 4 GB
+battery 7769 mAh
+operating system iOS",data/images/tablet_2.jpg
+146,Smartwatch,Lenovo Ultra,"screen 14.6 inch
+memory 15 GB
+battery 4693 mAh
+operating system iOS",data/images/smartwatch_1.jpg
+147,Laptop,Dell Titan,"screen 15.0 inch
+memory 29 GB
+battery 9197 mAh
+operating system Windows 11",data/images/laptop_1.jpg
+148,Smartwatch,Huawei Elite,"screen 8.3 inch
+memory 8 GB
+battery 3938 mAh
+operating system macOS",data/images/smartwatch_1.jpg
+149,Smartwatch,Apple Ultra,"screen 10.6 inch
+memory 25 GB
+battery 7396 mAh
+operating system Android",data/images/smartwatch_2.jpg
+150,Laptop,Huawei Titan,"screen 13.7 inch
+memory 15 GB
+battery 2197 mAh
+operating system macOS",data/images/laptop_2.jpg
+151,Tablet,Sony Titan,"screen 8.9 inch
+memory 14 GB
+battery 7357 mAh
+operating system Android",data/images/tablet_2.jpg
+152,Tablet,Samsung Galaxy,"screen 9.7 inch
+memory 24 GB
+battery 4307 mAh
+operating system Windows 11",data/images/tablet_2.jpg
+153,Laptop,Lenovo X,"screen 13.9 inch
+memory 5 GB
+battery 7307 mAh
+operating system Android",data/images/laptop_3.jpg
+154,Laptop,Samsung Max,"screen 13.2 inch
+memory 4 GB
+battery 3072 mAh
+operating system iOS",data/images/laptop_3.jpg
+155,Smartwatch,Xiaomi Titan,"screen 9.8 inch
+memory 24 GB
+battery 3066 mAh
+operating system Android",data/images/smartwatch_2.jpg
+156,Tablet,Apple Ultra,"screen 12.9 inch
+memory 19 GB
+battery 2590 mAh
+operating system macOS",data/images/tablet_3.jpg
+157,Smartphone,Apple Pro,"screen 10.4 inch
+memory 21 GB
+battery 5703 mAh
+operating system Windows 11",data/images/smartphone_2.jpg
+158,Smartwatch,Dell Max,"screen 7.1 inch
+memory 7 GB
+battery 2187 mAh
+operating system macOS",data/images/smartwatch_1.jpg
+159,Smartwatch,Sony Elite,"screen 8.5 inch
+memory 23 GB
+battery 9559 mAh
+operating system iOS",data/images/smartwatch_3.jpg
+160,Smartwatch,Sony Pro,"screen 10.2 inch
+memory 24 GB
+battery 7211 mAh
+operating system Android",data/images/smartwatch_3.jpg
+161,Tablet,Apple Titan,"screen 11.0 inch
+memory 22 GB
+battery 2977 mAh
+operating system macOS",data/images/tablet_2.jpg
+162,Smartwatch,Lenovo Galaxy,"screen 11.6 inch
+memory 16 GB
+battery 9324 mAh
+operating system iOS",data/images/smartwatch_1.jpg
+163,Laptop,Sony Titan,"screen 15.1 inch
+memory 7 GB
+battery 6373 mAh
+operating system Android",data/images/laptop_2.jpg
+164,Tablet,Samsung Galaxy,"screen 9.9 inch
+memory 18 GB
+battery 5352 mAh
+operating system iOS",data/images/tablet_3.jpg
+165,Smartwatch,Apple Elite,"screen 13.4 inch
+memory 25 GB
+battery 5660 mAh
+operating system macOS",data/images/smartwatch_1.jpg
+166,Smartphone,Xiaomi Galaxy,"screen 10.9 inch
+memory 13 GB
+battery 3203 mAh
+operating system iOS",data/images/smartphone_1.jpg
+167,Tablet,Samsung Elite,"screen 10.4 inch
+memory 28 GB
+battery 2496 mAh
+operating system iOS",data/images/tablet_2.jpg
+168,Laptop,Samsung Ultra,"screen 7.4 inch
+memory 17 GB
+battery 6661 mAh
+operating system iOS",data/images/laptop_3.jpg
+169,Tablet,Apple Pro,"screen 11.5 inch
+memory 9 GB
+battery 2074 mAh
+operating system Windows 11",data/images/tablet_3.jpg
+170,Smartwatch,Apple Pro,"screen 8.4 inch
+memory 18 GB
+battery 4663 mAh
+operating system macOS",data/images/smartwatch_1.jpg
+171,Smartwatch,Samsung Titan,"screen 5.1 inch
+memory 10 GB
+battery 4627 mAh
+operating system Windows 11",data/images/smartwatch_3.jpg
+172,Tablet,Huawei Pro,"screen 10.2 inch
+memory 20 GB
+battery 4151 mAh
+operating system Windows 11",data/images/tablet_3.jpg
+173,Tablet,Sony Elite,"screen 7.4 inch
+memory 26 GB
+battery 4165 mAh
+operating system Windows 11",data/images/tablet_2.jpg
+174,Laptop,Sony Max,"screen 15.0 inch
+memory 9 GB
+battery 7800 mAh
+operating system macOS",data/images/laptop_3.jpg
+175,Smartphone,Samsung Ultra,"screen 13.0 inch
+memory 28 GB
+battery 3747 mAh
+operating system iOS",data/images/smartphone_3.jpg
+176,Tablet,Apple Max,"screen 11.9 inch
+memory 27 GB
+battery 9228 mAh
+operating system Android",data/images/tablet_2.jpg
+177,Laptop,Samsung Galaxy,"screen 6.9 inch
+memory 10 GB
+battery 8293 mAh
+operating system iOS",data/images/laptop_3.jpg
+178,Smartphone,Dell Ultra,"screen 9.5 inch
+memory 25 GB
+battery 9747 mAh
+operating system Android",data/images/smartphone_3.jpg
+179,Smartphone,Huawei X,"screen 14.9 inch
+memory 6 GB
+battery 3637 mAh
+operating system iOS",data/images/smartphone_3.jpg
+180,Laptop,Apple Elite,"screen 12.7 inch
+memory 18 GB
+battery 7267 mAh
+operating system Android",data/images/laptop_2.jpg
+181,Tablet,Xiaomi Titan,"screen 9.7 inch
+memory 5 GB
+battery 9220 mAh
+operating system iOS",data/images/tablet_1.jpg
+182,Tablet,Apple Max,"screen 8.6 inch
+memory 9 GB
+battery 8026 mAh
+operating system iOS",data/images/tablet_2.jpg
+183,Smartphone,Huawei Pro,"screen 13.9 inch
+memory 27 GB
+battery 4476 mAh
+operating system iOS",data/images/smartphone_1.jpg
+184,Smartphone,Samsung Elite,"screen 10.8 inch
+memory 20 GB
+battery 5873 mAh
+operating system macOS",data/images/smartphone_2.jpg
+185,Smartphone,Lenovo Max,"screen 9.2 inch
+memory 13 GB
+battery 6486 mAh
+operating system iOS",data/images/smartphone_2.jpg
+186,Smartwatch,Dell Max,"screen 11.4 inch
+memory 26 GB
+battery 8967 mAh
+operating system iOS",data/images/smartwatch_3.jpg
+187,Smartphone,Samsung Elite,"screen 8.0 inch
+memory 12 GB
+battery 7498 mAh
+operating system iOS",data/images/smartphone_1.jpg
+188,Smartphone,Xiaomi X,"screen 7.8 inch
+memory 28 GB
+battery 9758 mAh
+operating system Windows 11",data/images/smartphone_3.jpg
+189,Smartphone,Huawei Galaxy,"screen 9.5 inch
+memory 32 GB
+battery 7443 mAh
+operating system Windows 11",data/images/smartphone_1.jpg
+190,Tablet,Huawei Galaxy,"screen 12.1 inch
+memory 14 GB
+battery 6677 mAh
+operating system iOS",data/images/tablet_3.jpg
+191,Laptop,Xiaomi Titan,"screen 13.6 inch
+memory 4 GB
+battery 7349 mAh
+operating system Windows 11",data/images/laptop_1.jpg
+192,Laptop,Dell Pro,"screen 14.4 inch
+memory 15 GB
+battery 7013 mAh
+operating system iOS",data/images/laptop_3.jpg
+193,Tablet,Samsung X,"screen 12.3 inch
+memory 32 GB
+battery 7377 mAh
+operating system iOS",data/images/tablet_3.jpg
+194,Laptop,Huawei Max,"screen 8.9 inch
+memory 5 GB
+battery 2535 mAh
+operating system macOS",data/images/laptop_3.jpg
+195,Smartwatch,Huawei Titan,"screen 8.5 inch
+memory 7 GB
+battery 5282 mAh
+operating system Windows 11",data/images/smartwatch_3.jpg
+196,Tablet,Sony Ultra,"screen 14.4 inch
+memory 17 GB
+battery 2657 mAh
+operating system Android",data/images/tablet_1.jpg
+197,Smartwatch,Xiaomi Galaxy,"screen 6.9 inch
+memory 24 GB
+battery 7527 mAh
+operating system Android",data/images/smartwatch_1.jpg
+198,Smartwatch,Samsung Ultra,"screen 10.8 inch
+memory 10 GB
+battery 3010 mAh
+operating system Windows 11",data/images/smartwatch_3.jpg
+199,Tablet,Dell Max,"screen 8.4 inch
+memory 30 GB
+battery 6418 mAh
+operating system Android",data/images/tablet_3.jpg
+200,Tablet,Samsung Ultra,"screen 15.3 inch
+memory 30 GB
+battery 4864 mAh
+operating system macOS",data/images/tablet_2.jpg

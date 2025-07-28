@@ -1,0 +1,49 @@
+# MLflow Tracking Server Dockerfile
+FROM python:3.11-slim
+
+# Set working directory
+WORKDIR /mlflow
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    curl \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+# Install MLflow and dependencies
+RUN pip install --upgrade pip \
+    && pip install --no-cache-dir \
+        mlflow[extras]>=2.8.0 \
+        psycopg2-binary \
+        boto3 \
+        azure-storage-blob \
+        google-cloud-storage
+
+# Create MLflow user
+RUN useradd --create-home --shell /bin/bash mlflow \
+    && chown -R mlflow:mlflow /mlflow
+
+# Create directories for MLflow data
+RUN mkdir -p /mlflow/artifacts /mlflow/data \
+    && chown -R mlflow:mlflow /mlflow
+
+USER mlflow
+
+# Expose MLflow port
+EXPOSE 5000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:5000/health || exit 1
+
+# Default command to run MLflow server
+CMD ["mlflow", "server", \
+     "--host", "0.0.0.0", \
+     "--port", "5000", \
+     "--default-artifact-root", "/mlflow/artifacts", \
+     "--serve-artifacts"]

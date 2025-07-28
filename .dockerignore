@@ -1,0 +1,109 @@
+# Git
+.git
+.gitignore
+.github
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+env
+pip-log.txt
+pip-delete-this-directory.txt
+.tox
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.venv
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# Environments
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Project specific
+models_cache/
+*.pkl
+*.pth
+*.model
+
+# Documentation
+*.md
+!README.md
+
+# Docker
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Development files
+todo.txt
+.env
+*.log
+Makefile
+
+# Large model files (download during runtime)
+models/
+*.bin
+*.safetensors
+
+# Logs
+logs/
+
+# Temporary files
+tmp/
+temp/
+.tmp
+
+# MLflow
+mlruns/
+mlflow.db
+
+# Kubernetes
+kubernetes/
+k8s/
+*.yaml
+*.yml
+!docker-compose.yml
+
+# Monitoring
+prometheus/
+grafana/
+
+# Large files that should be downloaded separately
+embeddings/text_embeddings.pkl
+embeddings/image_embeddings.pkl

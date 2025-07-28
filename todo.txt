@@ -1,0 +1,129 @@
+Projekt: System rekomendacji produktów na podstawie cech tekstowych (opis, kategoria produktu) oraz wizualnych (wygląd)
+
+
+Narzędzia, które już zostały zaimplementowane:
+    • LLM - generowanie embeddingów tekstowych, odpowiedzi dla klienta
+    • langchain/langgraph - stworzenie agenta, który integruje różne komponenty systemu rekomendacji
+    • pytorch - model do computer vision – docelowo wytrenowanie własnej sieci neuronowej do ekstracji cech wizualnych z obrazów produktów
+    • bazy danych SQL - przechowywanie danych
+
+
+Narzędzia, które jeszcze zostaną zaimplementowane:
+    • RAG - stworzenie bazy wiedzy dla LLM - bardzo prosty tylko po to, żeby nauczyć się implementacji
+    • apache airflow - automatyzacja i harmonogramowanie zadań
+    • pyspark - przetwarzanie dużych zbiorów danych
+    • docker - konteneryzacja - dockerfile dla streamlit i dla API, utworzenie docker compose
+    • kubernetes - zarządzanie i monitorowanie kontenerów
+    • prometheus - automatyczne zbieranie metryk z aplikacji i kubernetesa
+    • grafana - wizualizacja metryk, tworzenie metryk zebranych przez prometheusa
+    • MLflow - śledzenie eksperymentów, zapisywanie modeli podczas trenowania
+
+
+    1. Integracja Retrieval-Augmented Generation (RAG)
+       Opis: Wdrożenie mechanizmu RAG, aby wzbogacić proces rekomendacji o wiedzę zewnętrzną. Stworzymy bazę wiedzy o produktach i wykorzystamy RAG do wyszukiwania relewantnych informacji na podstawie zapytań użytkownika. Pozwoli to na generowanie bardziej informatywnych i różnorodnych rekomendacji, wykraczających poza proste podobieństwo.
+       Narzędzia: LangChain RAG, baza danych wektorowych ChromaDB, baza wiedzy o produktach (opisy, recenzje, specyfikacje)
+
+    2. Automatyzacja Potoku Danych z Apache Airflow
+       Opis: Automatyzacja potoku przetwarzania danych, obejmującego ładowanie danych, preprocessing, generowanie embeddingów i trenowanie modeli, przy użyciu Apache Airflow. Stworzymy DAG-i Airflow do planowania i automatyzacji potoku danych, zapewniając aktualność danych, aktualizacje modeli i stabilność systemu.
+
+    3. Przetwarzanie Dużych Danych z PySpark
+       Opis: Skalowanie możliwości przetwarzania danych poprzez wykorzystanie PySpark do efektywnej obsługi dużych zbiorów danych. Migracja zadań przetwarzania danych (np. obliczanie macierzy podobieństwa, generowanie embeddingów dla dużych katalogów produktów) do PySpark w celu rozproszonego przetwarzania i skalowalności.
+
+    4. Konteneryzacja z Docker
+       Opis: Konteneryzacja aplikacji API i Streamlit przy użyciu Docker, co ułatwi wdrażanie, zapewni powtarzalność środowiska i skalowalność. Stworzymy Dockerfile i Docker Compose do konteneryzacji aplikacji.
+
+    5. Orkiestracja z Kubernetes
+       Opis: Orkiestracja skonteneryzowanej aplikacji przy użyciu Kubernetes, co zapewni wysoką dostępność, skalowalność i automatyzację zarządzania wdrożeniami. Wdrożenie aplikacji Docker na klaster Kubernetes i konfiguracja deploymentów, serwisów i strategii skalowania.
+
+    6. Monitoring i Wizualizacja Metryk z Prometheus i Grafana
+       Opis: Wdrożenie monitoringu i wizualizacji metryk systemu przy użyciu Prometheus i Grafana. Monitorowanie wydajności API, jakości rekomendacji, wykorzystania zasobów systemowych w celu śledzenia działania, identyfikacji problemów i zapewnienia zdrowia systemu.
+
+    7. Śledzenie Eksperymentów z MLflow
+       Opis: Wdrożenie MLflow do śledzenia i zarządzania eksperymentami ML, w tym tuningu parametrów, wersjonowania modeli i zapewnienia powtarzalności eksperymentów. Integracja MLflow do śledzenia eksperymentów fine-tuningu modeli, inżynierii promptów i innych zadań ML.
+
+
+
+
+🚀 PLAN ROZWOJU PROJEKTU - Product Recommendation System
+📋 ROADMAP IMPLEMENTACJI NARZĘDZI
+
+FAZA 1: PODSTAWY DEVOPS (Fundamenty)
+Cel: Przygotowanie infrastruktury dla dalszego rozwoju
+
+1.1 Docker + Docker Compose ⭐ NAJWYŻSZY PRIORYTET
+   Dockerfile dla FastAPI backend
+   Dockerfile dla Streamlit frontend
+   Dockerfile dla PostgreSQL database
+   docker-compose.yml dla całego stacku
+   .dockerignore i optymalizacja obrazów
+   Dokumentacja setup'u
+
+1.2 MLflow Integration ⭐ WYSOKI PRIORYTET
+   Setup MLflow tracking server
+   Integracja z model training pipeline
+   Experiment logging w recommendation agent
+   Model versioning i registry
+   MLflow UI w docker-compose
+
+
+FAZA 2: MONITORING & OBSERVABILITY
+Cel: Implementacja monitoringu i zbierania metryk
+
+2.1 Prometheus Setup
+   Prometheus server w kontenerze
+   Metryki z FastAPI (request count, latency, errors)
+   Metryki z Streamlit (user interactions)
+   System metrics (CPU, memory, disk)
+   Custom business metrics (recommendation quality)
+
+2.2 Grafana Integration
+   Grafana server w kontenerze
+   Dashboardy dla API metrics
+   Dashboardy dla system health
+   Alerting rules dla critical metrics
+   Data source configuration (Prometheus)
+
+
+FAZA 3: ORCHESTRATION & DEPLOYMENT
+Cel: Production-ready deployment
+
+3.1 Kubernetes Setup
+   Local Kubernetes cluster (minikube/kind)
+   Kubernetes manifests (deployments, services, configmaps)
+   Ingress controller dla external access
+   Persistent volumes dla databases
+   Resource limits i health checks
+   Horizontal Pod Autoscaler
+
+3.2 CI/CD Pipeline (BONUS)
+   GitHub Actions workflow
+   Automated testing przed deployment
+   Automated Docker image building
+   Deployment do Kubernetes
+
+
+FAZA 4: DATA ENGINEERING & AI ENHANCEMENT
+Cel: Zaawansowane przetwarzanie danych i AI
+
+4.1 Apache Airflow
+   Airflow server w kontenerze
+   DAG dla data preprocessing
+   DAG dla model training/retraining
+   DAG dla embeddings generation
+   Monitoring Airflow jobs w Grafana
+
+4.2 Simple RAG Implementation
+   ChromaDB setup w kontenerze
+   Fake knowledge base creation
+   RAG node w LangGraph workflow
+   Vector similarity search
+   Enhanced prompts z RAG context
+
+4.3 PySpark Integration (OPCJONALNE)
+   PySpark cluster setup
+   Migration similarity calculation do Spark
+   Distributed embeddings processing
+   Performance comparison z pandas
+
+
+Na koniec przetestować dockera - nie zostały wcześniej przetestowane bo brak pamięci na obrazy

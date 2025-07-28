@@ -1,0 +1,28 @@
+# Grafana Monitoring Dashboard Dockerfile
+FROM grafana/grafana:latest
+
+# Set environment variables
+ENV GF_SECURITY_ADMIN_PASSWORD=admin \
+    GF_INSTALL_PLUGINS=grafana-piechart-panel
+
+# Create necessary directories
+USER root
+RUN mkdir -p /etc/grafana/provisioning/datasources \
+             /etc/grafana/provisioning/dashboards \
+             /var/lib/grafana/dashboards
+
+# Copy provisioning configurations
+COPY config/grafana/datasources/ /etc/grafana/provisioning/datasources/
+COPY config/grafana/dashboards/ /etc/grafana/provisioning/dashboards/
+COPY config/grafana/dashboard-configs/ /var/lib/grafana/dashboards/
+
+# Set proper permissions
+RUN chown -R grafana:grafana /etc/grafana /var/lib/grafana
+USER grafana
+
+# Expose Grafana port
+EXPOSE 3000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:3000/api/health || exit 1

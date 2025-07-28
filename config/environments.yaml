@@ -1,0 +1,136 @@
+
+development:
+  database:
+    host: "localhost"
+    port: 5432
+    user: "postgres"
+    password: "password"
+    database: "recommendation_system"
+
+  api:
+    host: "127.0.0.1"
+    port: 5000
+    debug: true
+    reload: true
+
+  streamlit:
+    host: "localhost"
+    port: 8501
+
+  mlflow:
+    tracking_uri: "http://localhost:5555"
+    artifact_root: "./mlflow_artifacts"
+    experiment_name: "recommendation_system_dev"
+    backend_store_uri: "postgresql://postgres:password@localhost:5432/recommendation_system"
+
+  model:
+    name: "meta-llama/Llama-3.2-1B-Instruct"
+    task: "text-generation"
+    max_new_tokens: 512
+    return_full_text: false
+    cache_dir: "./models_cache"
+
+  embeddings:
+    text_embeddings_path: "embeddings/text_embeddings.pkl"
+    image_embeddings_path: "embeddings/image_embeddings.pkl"
+    embeddings_dir: "embeddings/"
+
+  logging:
+    level: "INFO"
+    format: "%(asctime)s - %(levelname)s - %(message)s"
+    file: null  # null means log to console only
+
+production:
+  database:
+    host: "${DB_HOST:localhost}"
+    port: "${DB_PORT:5432}"
+    user: "${DB_USER:postgres}"
+    password: "${DB_PASSWORD}"
+    database: "${DB_NAME:recommendation_system}"
+
+  api:
+    host: "${API_HOST:0.0.0.0}"
+    port: "${API_PORT:5000}"
+    debug: false
+    reload: false
+
+  streamlit:
+    host: "${STREAMLIT_HOST:0.0.0.0}"
+    port: "${STREAMLIT_PORT:8501}"
+
+  mlflow:
+    tracking_uri: "${MLFLOW_TRACKING_URI:http://localhost:5555}"
+    artifact_root: "${MLFLOW_ARTIFACT_ROOT:./mlflow_artifacts}"
+    experiment_name: "recommendation_system_prod"
+    backend_store_uri: "postgresql://${DB_USER:postgres}:${DB_PASSWORD}@${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:recommendation_system}"
+
+  model:
+    name: "${MODEL_NAME:meta-llama/Llama-3.2-1B-Instruct}"
+    task: "text-generation"
+    max_new_tokens: "${MODEL_MAX_TOKENS:512}"
+    return_full_text: false
+    cache_dir: "${MODEL_CACHE_DIR:./models_cache}"
+
+  embeddings:
+    text_embeddings_path: "${TEXT_EMBEDDINGS_PATH:embeddings/text_embeddings.pkl}"
+    image_embeddings_path: "${IMAGE_EMBEDDINGS_PATH:embeddings/image_embeddings.pkl}"
+    embeddings_dir: "${EMBEDDINGS_DIR:embeddings/}"
+
+  logging:
+    level: "${LOG_LEVEL:INFO}"
+    format: "%(asctime)s - %(levelname)s - %(message)s"
+    file: "${LOG_FILE}"
+
+  prometheus:
+    port: 9090
+    scrape_interval: "15s"
+    evaluation_interval: "15s"
+    retention_time: "15d"
+    enable_lifecycle: true
+    targets:
+      api: "api:5000"
+      streamlit: "streamlit:8501"
+      mlflow: "mlflow:5000"
+
+  grafana:
+    port: 3000
+    admin_password: "admin"
+    plugins:
+      - "grafana-piechart-panel"
+    datasources:
+      prometheus_url: "http://prometheus:9090"
+
+test:
+  database:
+    host: "localhost"
+    port: 5432
+    user: "test_user"
+    password: "test_password"
+    database: "test_recommendation_system"
+
+  api:
+    host: "127.0.0.1"
+    port: 5001
+    debug: true
+    reload: false
+
+  streamlit:
+    host: "localhost"
+    port: 8502
+
+  model:
+    name: "meta-llama/Llama-3.2-1B-Instruct"
+    task: "text-generation"
+    max_new_tokens: 512
+    return_full_text: false
+    cache_dir: "./test_models_cache"
+
+  embeddings:
+    text_embeddings_path: "test_embeddings/text_embeddings.pkl"
+    image_embeddings_path: "test_embeddings/image_embeddings.pkl"
+    embeddings_dir: "test_embeddings/"
+
+  logging:
+    level: "DEBUG"
+    format: "%(asctime)s - %(levelname)s - %(message)s"
+    file: "test.log"
