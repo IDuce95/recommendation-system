@@ -1,0 +1,142 @@
+name: Security and Quality Checks
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 2 * * 1'  # Weekly on Monday at 2 AM
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install safety bandit semgrep
+        
+    - name: Run safety check
+      run: |
+        pip freeze | safety check --json --output safety-report.json || true
+        
+    - name: Run bandit security linter
+      run: |
+        bandit -r app/ ai/ config/ data/ -f json -o bandit-report.json || true
+        
+    - name: Run semgrep security scan
+      run: |
+        semgrep --config=auto app/ ai/ config/ data/ --json --output=semgrep-report.json || true
+        
+    - name: Upload security scan results
+      uses: actions/upload-artifact@v3
+      with:
+        name: security-reports
+        path: |
+          safety-report.json
+          bandit-report.json
+          semgrep-report.json
+          
+  dependency-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Run dependency vulnerability scan
+      uses: pypa/gh-action-pip-audit@v1.0.8
+      with:
+        inputs: requirements.txt
+        
+  docker-security:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      
+    - name: Build API image for scanning
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: ./docker/Dockerfile.api
+        push: false
+        tags: recommendation-api:scan
+        cache-from: type=gha
+        
+    - name: Build Streamlit image for scanning
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: ./docker/Dockerfile.streamlit
+        push: false
+        tags: recommendation-streamlit:scan
+        cache-from: type=gha
+        
+    - name: Run Trivy vulnerability scanner on API
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: 'recommendation-api:scan'
+        format: 'sarif'
+        output: 'trivy-api-results.sarif'
+        
+    - name: Run Trivy vulnerability scanner on Streamlit
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: 'recommendation-streamlit:scan'
+        format: 'sarif'
+        output: 'trivy-streamlit-results.sarif'
+        
+    - name: Upload Trivy scan results to GitHub Security tab
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: |
+          trivy-api-results.sarif
+          trivy-streamlit-results.sarif
+          
+  code-quality:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install radon mccabe mypy
+        
+    - name: Run complexity analysis
+      run: |
+        radon cc app/ ai/ config/ data/ --min B
+        radon mi app/ ai/ config/ data/ --min B
+        
+    - name: Run type checking with mypy
+      run: |
+        mypy app/ ai/ config/ data/ --ignore-missing-imports || true
+        
+    - name: SonarCloud Scan
+      if: github.event_name == 'push'
+      uses: SonarSource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
