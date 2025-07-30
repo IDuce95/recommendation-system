@@ -5,14 +5,15 @@ from langchain.llms.base import LLM
 import json
 from ai.chromadb_client import ChromaDBClient, KnowledgeBaseManager
 from ai.graph_state import GraphState
-from config.prompt_config import load_prompts
+from config.prompt_config import PromptConfig
 
 class RAGNode:
     def __init__(self, chroma_client: ChromaDBClient, llm: Optional[LLM] = None):
         self.chroma_client = chroma_client
         self.kb_manager = KnowledgeBaseManager(chroma_client)
         self.llm = llm
-        self.prompts = load_prompts()
+        self.prompt_config = PromptConfig()
+        self.prompts = self.prompt_config.get_all_prompts()
 
         self.rag_prompt = PromptTemplate(
             input_variables=["context", "query", "user_profile"],
