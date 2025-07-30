@@ -35,7 +35,6 @@ if "recommendations_data" not in st.session_state:
 
 col1, col2 = st.columns(spec=MAIN_COLUMNS_SPEC)
 
-
 @st.cache_resource
 def load_product_data() -> pd.DataFrame:
     try:
@@ -48,11 +47,9 @@ def load_product_data() -> pd.DataFrame:
         st.error(STATUS_MESSAGES["error_db"].format(error=e))
         return pd.DataFrame()
 
-
 def extract_product_info(selected_product: str, filtered_products: pd.DataFrame) -> Dict:
     selected_product_index = int(selected_product.split('.')[0]) - 1
     return filtered_products.iloc[selected_product_index].to_dict()
-
 
 def process_api_response(recommendations_data: Dict) -> None:
     if recommendations_data and recommendations_data.get("success", False):
@@ -61,7 +58,6 @@ def process_api_response(recommendations_data: Dict) -> None:
     else:
         st.error(STATUS_MESSAGES["error_api"])
         st.session_state.recommendations_data = None
-
 
 def display_recommendations() -> None:
     if st.session_state.recommendations_data is None:
@@ -131,7 +127,6 @@ def display_recommendations() -> None:
                                     except Exception as e:
                                         st.error(f"Could not load image: {e}")
 
-
 def handle_recommendation_generation(
     selected_product: str,
     filtered_products: pd.DataFrame,
@@ -157,7 +152,6 @@ def handle_recommendation_generation(
             image_weight=image_weight
         )
         process_api_response(recommendations_data)
-
 
 def main():
     products = load_product_data()
@@ -205,7 +199,6 @@ def main():
 
     with col2.container(border=True):
         display_recommendations()
-
 
 if __name__ == "__main__":
     main()

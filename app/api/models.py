@@ -1,12 +1,10 @@
 from typing import List, Optional
 from pydantic import BaseModel
 
-
 class ImageInfo(BaseModel):
     product_name: str
     image_path: str
     category: str
-
 
 class RecommendationResponse(BaseModel):
     success: bool

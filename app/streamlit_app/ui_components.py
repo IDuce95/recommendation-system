@@ -8,7 +8,6 @@ from app.streamlit_app.config import (
     DEFAULT_VALUES, IMAGE_CONFIG
 )
 
-
 class WeightConfigurationUI:
 
     @staticmethod
@@ -62,7 +61,6 @@ class WeightConfigurationUI:
         else:
             return cls.handle_single_embedding_type(use_text_embeddings)
 
-
 class ProductSelectionUI:
 
     @staticmethod
@@ -94,7 +92,6 @@ class ProductSelectionUI:
         if 'image_path' in selected_product_details and pd.notna(selected_product_details.get('image_path', '')):
             st.image(selected_product_details.get('image_path', ''), width=IMAGE_CONFIG["width"])
 
-
 class EmbeddingSelectionUI:
 
     @staticmethod
@@ -123,7 +120,6 @@ class EmbeddingSelectionUI:
             use_text_embeddings, use_image_embeddings
         )
         return use_text_embeddings, text_weight, image_weight
-
 
 class RecommendationUI:
 

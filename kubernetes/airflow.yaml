@@ -1,0 +1,262 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: airflow-config
+  namespace: recommendation-system
+data:
+  airflow.cfg: |
+    [core]
+    executor = LocalExecutor
+    dags_folder = /opt/airflow/dags
+    load_examples = False
+    
+    [database]
+    sql_alchemy_conn = postgresql+psycopg2://airflow:airflow@airflow-postgres:5432/airflow
+    
+    [webserver]
+    expose_config = True
+    
+    [api]
+    auth_backends = airflow.api.auth.backend.basic_auth
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: airflow-postgres
+  namespace: recommendation-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: airflow-postgres
+  template:
+    metadata:
+      labels:
+        app: airflow-postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:15
+        env:
+        - name: POSTGRES_USER
+          value: "airflow"
+        - name: POSTGRES_PASSWORD
+          value: "airflow"
+        - name: POSTGRES_DB
+          value: "airflow"
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+        - name: postgres-storage
+          mountPath: /var/lib/postgresql/data
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+      volumes:
+      - name: postgres-storage
+        persistentVolumeClaim:
+          claimName: airflow-postgres-pvc
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: airflow-postgres
+  namespace: recommendation-system
+spec:
+  selector:
+    app: airflow-postgres
+  ports:
+  - port: 5432
+    targetPort: 5432
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: airflow-postgres-pvc
+  namespace: recommendation-system
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: airflow-init
+  namespace: recommendation-system
+spec:
+  template:
+    spec:
+      containers:
+      - name: airflow-init
+        image: recommendation-airflow:latest
+        command:
+        - bash
+        - -c
+        - |
+          airflow db init
+          airflow users create --username admin --firstname Admin --lastname User --role Admin --email admin@example.com --password admin
+        env:
+        - name: AIRFLOW__CORE__EXECUTOR
+          value: "LocalExecutor"
+        - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
+          value: "postgresql+psycopg2://airflow:airflow@airflow-postgres:5432/airflow"
+        - name: AIRFLOW__CORE__LOAD_EXAMPLES
+          value: "false"
+        volumeMounts:
+        - name: airflow-dags
+          mountPath: /opt/airflow/dags
+        - name: airflow-logs
+          mountPath: /opt/airflow/logs
+      restartPolicy: OnFailure
+      volumes:
+      - name: airflow-dags
+        configMap:
+          name: airflow-dags
+      - name: airflow-logs
+        persistentVolumeClaim:
+          claimName: airflow-logs-pvc
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: airflow-webserver
+  namespace: recommendation-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: airflow-webserver
+  template:
+    metadata:
+      labels:
+        app: airflow-webserver
+    spec:
+      containers:
+      - name: webserver
+        image: recommendation-airflow:latest
+        command: ["airflow", "webserver"]
+        ports:
+        - containerPort: 8080
+        env:
+        - name: AIRFLOW__CORE__EXECUTOR
+          value: "LocalExecutor"
+        - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
+          value: "postgresql+psycopg2://airflow:airflow@airflow-postgres:5432/airflow"
+        - name: AIRFLOW__CORE__LOAD_EXAMPLES
+          value: "false"
+        volumeMounts:
+        - name: airflow-dags
+          mountPath: /opt/airflow/dags
+        - name: airflow-logs
+          mountPath: /opt/airflow/logs
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+      volumes:
+      - name: airflow-dags
+        configMap:
+          name: airflow-dags
+      - name: airflow-logs
+        persistentVolumeClaim:
+          claimName: airflow-logs-pvc
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: airflow-webserver
+  namespace: recommendation-system
+spec:
+  selector:
+    app: airflow-webserver
+  ports:
+  - port: 8080
+    targetPort: 8080
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: airflow-scheduler
+  namespace: recommendation-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: airflow-scheduler
+  template:
+    metadata:
+      labels:
+        app: airflow-scheduler
+    spec:
+      containers:
+      - name: scheduler
+        image: recommendation-airflow:latest
+        command: ["airflow", "scheduler"]
+        env:
+        - name: AIRFLOW__CORE__EXECUTOR
+          value: "LocalExecutor"
+        - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
+          value: "postgresql+psycopg2://airflow:airflow@airflow-postgres:5432/airflow"
+        - name: AIRFLOW__CORE__LOAD_EXAMPLES
+          value: "false"
+        volumeMounts:
+        - name: airflow-dags
+          mountPath: /opt/airflow/dags
+        - name: airflow-logs
+          mountPath: /opt/airflow/logs
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+      volumes:
+      - name: airflow-dags
+        configMap:
+          name: airflow-dags
+      - name: airflow-logs
+        persistentVolumeClaim:
+          claimName: airflow-logs-pvc
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: airflow-logs-pvc
+  namespace: recommendation-system
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi

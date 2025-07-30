@@ -17,7 +17,6 @@ db_config = config.get_database_config()
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
-
 def _read_and_validate_csv(
     csv_file_path: str,
 ) -> pd.DataFrame:
@@ -35,7 +34,6 @@ def _read_and_validate_csv(
 
     return df
 
-
 def _clean_dataframe(
     df: pd.DataFrame,
 ) -> pd.DataFrame:
@@ -44,13 +42,11 @@ def _clean_dataframe(
     logger.info(f"Po czyszczeniu: {len(df)} rekordów gotowych do załadowania")
     return df
 
-
 def _establish_database_connection():
     logger.info("Łączenie z bazą danych PostgreSQL...")
     conn = psycopg2.connect(**db_config)
     cursor = conn.cursor()
     return conn, cursor
-
 
 def _truncate_table_if_needed(
     cursor,
@@ -64,7 +60,6 @@ def _truncate_table_if_needed(
         conn.commit()
         logger.info("Tabela wyczyszczona")
 
-
 def _insert_data_to_table(
     cursor,
     conn,
@@ -73,7 +68,6 @@ def _insert_data_to_table(
 ) -> None:
     columns = df.columns.tolist()
     values = df.values.tolist()
-
 
     logger.info(f"Wstawianie {len(values)} rekordów do tabeli {table_name}...")
     execute_values(
@@ -87,7 +81,6 @@ def _insert_data_to_table(
     conn.commit()
     logger.info("Dane zostały pomyślnie załadowane do bazy danych")
 
-
 def _verify_insertion(
     cursor,
     table_name: str,
@@ -95,7 +88,6 @@ def _verify_insertion(
     cursor.execute(f"SELECT COUNT(*) FROM {table_name};")
     count = cursor.fetchone()[0]
     logger.info(f"Liczba rekordów w tabeli {table_name}: {count}")
-
 
 def _close_database_connection(
     cursor,
@@ -106,7 +98,6 @@ def _close_database_connection(
     if conn:
         conn.close()
     logger.info("Połączenie z bazą danych zamknięte")
-
 
 def load_csv_to_database(
     csv_file_path: str,
@@ -133,7 +124,6 @@ def load_csv_to_database(
     finally:
         _close_database_connection(cursor, conn)
 
-
 def verify_data_load(
     table_name: str = 'products',
 ) -> None:
@@ -155,7 +145,6 @@ def verify_data_load(
             cursor.close()
         if 'conn' in locals():
             conn.close()
-
 
 if __name__ == "__main__":
     csv_file = "data/dataset.csv"

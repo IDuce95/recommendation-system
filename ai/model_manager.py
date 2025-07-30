@@ -4,7 +4,6 @@ from langchain_community.llms import HuggingFacePipeline
 
 logger = logging.getLogger(__name__)
 
-
 class ModelManager:
 
     def __init__(self, model_config: dict):

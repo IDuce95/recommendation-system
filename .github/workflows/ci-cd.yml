@@ -2,14 +2,15 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ dev ]
   pull_request:
-    branches: [ main ]
+    branches: [ dev ]
 
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME_API: ${{ github.repository }}/api
   IMAGE_NAME_STREAMLIT: ${{ github.repository }}/streamlit
+  IMAGE_NAME_AIRFLOW: ${{ github.repository }}/airflow
 
 jobs:
   test:
@@ -106,6 +107,17 @@ jobs:
           type=sha,prefix={{branch}}-
           type=raw,value=latest,enable={{is_default_branch}}
 
+    - name: Extract metadata for Airflow
+      id: meta-airflow
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_AIRFLOW }}
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=sha,prefix={{branch}}-
+          type=raw,value=latest,enable={{is_default_branch}}
+
     - name: Build and push API image
       uses: docker/build-push-action@v5
       with:
@@ -128,64 +140,21 @@ jobs:
         cache-from: type=gha
         cache-to: type=gha,mode=max
 
-  deploy-staging:
-    needs: build-and-push
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/develop'
-    environment: staging
-
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Set up kubectl
-      uses: azure/setup-kubectl@v3
+    - name: Build and push Airflow image
+      uses: docker/build-push-action@v5
       with:
-        version: 'latest'
-
-    - name: Configure kubectl for staging
-      run: |
-        echo "${{ secrets.KUBE_CONFIG_STAGING }}" | base64 -d > kubeconfig
-        export KUBECONFIG=kubeconfig
-        kubectl config current-context
-
-    - name: Deploy to staging
-      run: |
-        export KUBECONFIG=kubeconfig
-        export IMAGE_TAG=${{ github.sha }}
-
-        # Update image tags in Kubernetes manifests
-        sed -i "s|recommendation-api:latest|${{ env.REGISTRY }}/${{ env.IMAGE_NAME_API }}:develop-${IMAGE_TAG:0:7}|g" kubernetes/fastapi.yaml
-        sed -i "s|recommendation-streamlit:latest|${{ env.REGISTRY }}/${{ env.IMAGE_NAME_STREAMLIT }}:develop-${IMAGE_TAG:0:7}|g" kubernetes/streamlit.yaml
-
-        # Deploy to staging namespace
-        kubectl apply -f kubernetes/ -n recommendation-staging
-
-        # Wait for rollout
-        kubectl rollout status deployment/fastapi -n recommendation-staging --timeout=300s
-        kubectl rollout status deployment/streamlit -n recommendation-staging --timeout=300s
-
-    - name: Run smoke tests
-      run: |
-        export KUBECONFIG=kubeconfig
-
-        # Wait for services to be ready
-        kubectl wait --for=condition=ready pod -l app=fastapi -n recommendation-staging --timeout=300s
-
-        # Get service URL and test
-        API_URL=$(kubectl get service fastapi-service -n recommendation-staging -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-        if [ -z "$API_URL" ]; then
-          API_URL=$(kubectl get service fastapi-service -n recommendation-staging -o jsonpath='{.spec.clusterIP}')
-        fi
-
-        # Basic health check
-        kubectl port-forward service/fastapi-service 8080:5000 -n recommendation-staging &
-        sleep 10
-        curl -f http://localhost:8080/health || exit 1
+        context: .
+        file: ./docker/Dockerfile.airflow
+        push: true
+        tags: ${{ steps.meta-airflow.outputs.tags }}
+        labels: ${{ steps.meta-airflow.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
 
   deploy-production:
     needs: build-and-push
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/dev'
     environment: production
 
     steps:

@@ -8,7 +8,6 @@ from prometheus_client import (
 )
 from fastapi import Request, Response
 
-
 api_requests_total = Counter(
     'api_requests_total',
     'Total number of API requests',
@@ -47,26 +46,25 @@ system_memory_usage_percent = Gauge(
 
 app_info = Info('app_info', 'Application information')
 
-
 class PrometheusMetrics:
-    
+
     def __init__(self):
         app_info.info({
             'version': '1.0.0',
             'service': 'recommendation-api',
             'environment': 'development'
         })
-    
+
     def update_system_metrics(self):
         try:
             cpu_percent = psutil.cpu_percent()
             system_cpu_usage_percent.set(cpu_percent)
-            
+
             memory = psutil.virtual_memory()
             system_memory_usage_percent.set(memory.percent)
         except Exception as e:
             print(f"Error updating system metrics: {e}")
-    
+
     def record_api_request(self, method: str, endpoint: str,
                            status_code: int, duration: float):
         api_requests_total.labels(
@@ -74,26 +72,24 @@ class PrometheusMetrics:
             endpoint=endpoint,
             status_code=status_code
         ).inc()
-        
+
         api_request_duration_seconds.labels(
             method=method,
             endpoint=endpoint
         ).observe(duration)
-    
+
     def record_recommendation(self, user_id: str, rec_type: str,
                               duration: float):
         recommendations_generated_total.labels(
             user_id=user_id,
             recommendation_type=rec_type
         ).inc()
-        
+
         recommendation_generation_duration_seconds.labels(
             recommendation_type=rec_type
         ).observe(duration)
 
-
 metrics = PrometheusMetrics()
-
 
 def monitor_recommendation(rec_type: str = "default"):
     def decorator(func):
@@ -101,7 +97,7 @@ def monitor_recommendation(rec_type: str = "default"):
         async def wrapper(*args, **kwargs):
             start_time = time.time()
             user_id = kwargs.get('user_id', 'unknown')
-            
+
             try:
                 result = await func(*args, **kwargs)
                 duration = time.time() - start_time
@@ -118,7 +114,6 @@ def monitor_recommendation(rec_type: str = "default"):
         return wrapper
     return decorator
 
-
 def get_metrics():
     metrics.update_system_metrics()
     return Response(
@@ -126,19 +121,18 @@ def get_metrics():
         media_type=CONTENT_TYPE_LATEST
     )
 
-
 async def metrics_middleware(request: Request, call_next):
     metrics.update_system_metrics()
-    
+
     method = request.method
     endpoint = str(request.url.path)
     start_time = time.time()
-    
+
     response = await call_next(request)
     duration = time.time() - start_time
-    
+
     metrics.record_api_request(
         method, endpoint, response.status_code, duration
     )
-    
+
     return response

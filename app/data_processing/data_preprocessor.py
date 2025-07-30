@@ -25,7 +25,6 @@ from app.recommendation.similarity_calculator import CosineSimilarityCalculator
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
-
 class DataPreprocessor:
     def __init__(
         self,
@@ -144,7 +143,6 @@ class DataPreprocessor:
         text_similarity_matrix = similarity_calculator.calculate_similarity_matrix(self.text_embeddings)
         logger.info("Text similarity matrix generated using Cosine Similarity.")
         return text_similarity_matrix
-
 
 if __name__ == "__main__":
     loader = DataLoader()

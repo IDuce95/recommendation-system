@@ -1,0 +1,104 @@
+{{- if .Values.recommendationApi.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ml-recommendation-system.fullname" . }}-recommendation-api
+  labels:
+    {{- include "ml-recommendation-system.labels" . | nindent 4 }}
+    app.kubernetes.io/component: recommendation-api
+spec:
+  {{- if not .Values.recommendationApi.autoscaling.enabled }}
+  replicas: {{ .Values.recommendationApi.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "ml-recommendation-system.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: recommendation-api
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- with .Values.recommendationApi.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "ml-recommendation-system.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: recommendation-api
+    spec:
+      {{- with .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "ml-recommendation-system.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.recommendationApi.podSecurityContext | nindent 8 }}
+      containers:
+        - name: recommendation-api
+          securityContext:
+            {{- toYaml .Values.recommendationApi.securityContext | nindent 12 }}
+          image: "{{ .Values.recommendationApi.image.registry }}/{{ .Values.recommendationApi.image.repository }}:{{ .Values.recommendationApi.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.recommendationApi.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.recommendationApi.service.port }}
+              protocol: TCP
+          env:
+            {{- include "ml-recommendation-system.commonEnv" . | nindent 12 }}
+            - name: COMPONENT_TYPE
+              value: "recommendation-api"
+            - name: API_PORT
+              value: {{ .Values.recommendationApi.service.port | quote }}
+            - name: WORKERS
+              value: {{ .Values.recommendationApi.workers | quote }}
+            {{- with .Values.recommendationApi.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+          resources:
+            {{- toYaml .Values.recommendationApi.resources | nindent 12 }}
+          volumeMounts:
+            - name: config
+              mountPath: /app/config
+              readOnly: true
+            {{- if .Values.models.persistence.enabled }}
+            - name: models
+              mountPath: /app/models
+              readOnly: true
+            {{- end }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "ml-recommendation-system.fullname" . }}-config
+        {{- if .Values.models.persistence.enabled }}
+        - name: models
+          persistentVolumeClaim:
+            claimName: {{ include "ml-recommendation-system.fullname" . }}-models
+        {{- end }}
+      {{- with .Values.recommendationApi.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.recommendationApi.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.recommendationApi.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

@@ -1,41 +1,55 @@
-# Product Recommendation System
+# ML Recommendation System
 
-An AI-powered product recommendation system that combines textual and visual embeddings to provide intelligent product suggestions. This project serves as a comprehensive learning platform for modern ML/AI and DevOps technologies.
+Kompletny system rekomendacji z uczeniem maszynowym i infrastrukturą produkcyjną.
 
-## Project Overview
+## Zaimplementowane narzędzia
 
-The system leverages multiple AI technologies to create sophisticated product recommendations:
+### Core ML Components
+- **Feature Store** - magazyn cech z cache'owaniem i wersjonowaniem
+- **Recommendation Engine** - silnik rekomendacji z modelem ensemble
+- **Text/Image Processing** - przetwarzanie tekstu i obrazów
+- **Model Manager** - zarządzanie modelami ML z LangGraph
 
-- **Text Analysis**: Uses LLM embeddings to understand product descriptions and categories
-- **Visual Recognition**: Processes product images to extract visual features
-- **Smart Agent**: LangChain/LangGraph agent that integrates different recommendation components
-- **Real-time API**: FastAPI backend with comprehensive monitoring and health checks
-- **Interactive UI**: Streamlit frontend for easy product exploration and recommendations
+### API & Services
+- **FastAPI Server** - REST API z dokumentacją OpenAPI
+- **A/B Testing Service** - testowanie wersji algorytmów
+- **Real-time Recommendations** - rekomendacje w czasie rzeczywistym
+- **Batch Processing** - przetwarzanie wsadowe
 
-## Key Features
+### UI & Monitoring
+- **Streamlit Dashboard** - interfejs użytkownika
+- **Grafana Dashboards** - monitorowanie systemu
+- **Prometheus Metrics** - zbieranie metryk
+- **Health Checks** - sprawdzanie stanu systemu
 
-- **Multi-modal Recommendations**: Combines text and image data for better accuracy
-- **Experiment Tracking**: MLflow integration for model versioning and experiment management
-- **Production Monitoring**: Prometheus metrics collection with Grafana dashboards
-- **Containerized Deployment**: Full Docker setup with orchestration
-- **Scalable Architecture**: Designed for easy scaling and production deployment
+### Data Pipeline
+- **Apache Airflow** - orkiestracja ETL
+- **Data Generator** - generowanie danych testowych
+- **PostgreSQL** - baza danych
+- **Redis** - cache i sesje
+- **Apache Kafka** - streaming danych
 
-## Quick Start
+### Infrastructure
+- **Docker Compose** - lokalne środowisko
+- **Kubernetes Helm** - deployment produkcyjny
+- **Load Balancing** - równoważenie obciążenia
+- **Auto-scaling** - automatyczne skalowanie
+
+### Development Tools
+- **MLflow Tracking** - śledzenie eksperymentów
+- **Configuration Management** - zarządzanie konfiguracją
+- **Environment Setup** - konfiguracja środowisk
+- **Build Automation** - automatyzacja budowy
+
+## Uruchomienie
 
 ```bash
-# Setup environment
-cp .env.example .env
+# Lokalne środowisko
+make docker-up
 
-# Launch all services
-./docker/manage.sh up
+# Kubernetes
+make k8s-deploy
+
+# Streamlit UI
+make streamlit-run
 ```
-
-## Access Points
-- **Streamlit UI**: http://localhost:8501 - Main user interface
-- **FastAPI API**: http://localhost:5000 - REST API endpoints
-- **MLflow UI**: http://localhost:5555 - Experiment tracking
-- **Prometheus**: http://localhost:9090 - Metrics collection
-- **Grafana**: http://localhost:3000 - Monitoring dashboards
-
-## Technology Stack
-FastAPI • Streamlit • PostgreSQL • MLflow • Prometheus • Grafana • LangChain • PyTorch

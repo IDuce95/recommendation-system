@@ -39,6 +39,26 @@ spec:
             name: mlflow-service
             port:
               number: 5555
+  - host: airflow.recommendation.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: airflow-webserver
+            port:
+              number: 8080
+  - host: chromadb.recommendation.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: chromadb-service
+            port:
+              number: 8001
   - host: monitoring.recommendation.local
     http:
       paths:

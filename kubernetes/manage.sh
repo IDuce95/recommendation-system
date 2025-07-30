@@ -71,20 +71,28 @@ load_images() {
 }
 
 deploy_all() {
-    echo "Deploying all services to Kubernetes..."
+    echo "Deploying to Kubernetes cluster..."
     
     kubectl apply -f kubernetes/namespace.yaml
     kubectl apply -f kubernetes/configmaps.yaml
     kubectl apply -f kubernetes/persistent-volumes.yaml
+    
     kubectl apply -f kubernetes/postgres.yaml
     
     echo "Waiting for PostgreSQL to be ready..."
     kubectl wait --for=condition=ready pod -l app=postgres -n "$NAMESPACE" --timeout=120s
     
     kubectl apply -f kubernetes/mlflow.yaml
+    kubectl apply -f kubernetes/chromadb.yaml
     kubectl apply -f kubernetes/fastapi.yaml
     kubectl apply -f kubernetes/streamlit.yaml
     kubectl apply -f kubernetes/monitoring.yaml
+    
+    echo "Deploying Airflow..."
+    ./kubernetes/update-dags.sh
+    kubectl apply -f kubernetes/airflow-dags-configmap.yaml
+    kubectl apply -f kubernetes/airflow.yaml
+    
     kubectl apply -f kubernetes/ingress.yaml
     
     echo "Deployment completed!"
@@ -95,6 +103,8 @@ delete_all() {
     echo "Deleting all deployments..."
     
     kubectl delete -f kubernetes/ingress.yaml --ignore-not-found=true
+    kubectl delete -f kubernetes/airflow.yaml --ignore-not-found=true
+    kubectl delete -f kubernetes/airflow-dags-configmap.yaml --ignore-not-found=true
     kubectl delete -f kubernetes/monitoring.yaml --ignore-not-found=true
     kubectl delete -f kubernetes/streamlit.yaml --ignore-not-found=true
     kubectl delete -f kubernetes/fastapi.yaml --ignore-not-found=true

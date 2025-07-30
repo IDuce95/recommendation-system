@@ -1,0 +1,23 @@
+{{- if .Values.models.persistence.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "ml-recommendation-system.fullname" . }}-models
+  labels:
+    {{- include "ml-recommendation-system.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    {{- range .Values.models.persistence.accessModes }}
+    - {{ . | quote }}
+    {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.models.persistence.size | quote }}
+  {{- if .Values.models.persistence.storageClass }}
+  {{- if (eq "-" .Values.models.persistence.storageClass) }}
+  storageClassName: ""
+  {{- else }}
+  storageClassName: "{{ .Values.models.persistence.storageClass }}"
+  {{- end }}
+  {{- end }}
+{{- end }}

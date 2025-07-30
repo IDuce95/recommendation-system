@@ -16,7 +16,6 @@ try:
 except ImportError:
     _HAS_DOTENV = False
 
-
 class ConfigManager:
 
     def __init__(self, environment: str = None, config_dir: str = None):
@@ -145,9 +144,7 @@ class ConfigManager:
 
         logging.basicConfig(**logging_kwargs)
 
-
 _config_manager: Optional[ConfigManager] = None
-
 
 def get_config() -> ConfigManager:
     global _config_manager
@@ -155,32 +152,25 @@ def get_config() -> ConfigManager:
         _config_manager = ConfigManager()
     return _config_manager
 
-
 def init_config(environment: str = None, config_dir: str = None) -> ConfigManager:
     global _config_manager
     _config_manager = ConfigManager(environment=environment, config_dir=config_dir)
     return _config_manager
 
-
 def get_database_config() -> Dict[str, Any]:
     return get_config().get_database_config()
-
 
 def get_api_config() -> Dict[str, Any]:
     return get_config().get_api_config()
 
-
 def get_streamlit_config() -> Dict[str, Any]:
     return get_config().get_streamlit_config()
-
 
 def get_model_config() -> Dict[str, Any]:
     return get_config().get_model_config()
 
-
 def get_embeddings_config() -> Dict[str, Any]:
     return get_config().get_embeddings_config()
-
 
 def setup_logging() -> None:
     get_config().setup_logging()

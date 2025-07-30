@@ -1,104 +1,89 @@
-.PHONY: help install run-api run-streamlit run-docker test clean setup lint format security ci-local generate_data load_data_to_db create_table preprocess_data api streamlit
+.PHONY: help setup build up down clean test lint format
 
 help:
-	@echo "Available commands:"
-	@echo "  install     - Install dependencies"
-	@echo "  run-api     - Run FastAPI server"
-	@echo "  run-streamlit - Run Streamlit app"
-	@echo "  run-docker  - Run with Docker Compose"
-	@echo "  test        - Run tests"
-	@echo "  lint        - Run linting checks"
-	@echo "  format      - Format code with black and isort"
-	@echo "  security    - Run security checks"
-	@echo "  ci-local    - Run full CI pipeline locally"
-	@echo "  clean       - Clean up generated files"
-	@echo "  setup       - Initial project setup"
+	@echo "ML Recommendation System Commands:"
+	@echo ""
+	@echo "Setup:"
+	@echo "  setup              - Install dependencies and setup environment"
+	@echo "  install-deps       - Install Python dependencies"
+	@echo "  setup-data         - Initialize database and load sample data"
+	@echo ""
+	@echo "Docker:"
+	@echo "  build              - Build Docker images"
+	@echo "  up                 - Start all services"
+	@echo "  down               - Stop all services"
+	@echo "  restart            - Restart all services"
+	@echo "  logs               - Show service logs"
+	@echo ""
+	@echo "Development:"
+	@echo "  test               - Run tests"
+	@echo "  lint               - Run code linting"
+	@echo "  format             - Format code"
+	@echo "  clean              - Clean up containers and cache"
+	@echo ""
+	@echo "Kubernetes:"
+	@echo "  helm-deploy        - Deploy using Helm"
+	@echo "  helm-status        - Check Helm deployment status"
+	@echo "  helm-cleanup       - Remove Helm deployment"
 
-install:
+DOCKER_COMPOSE_FILE = docker-compose.yml
+
+setup: install-deps setup-data
+	@echo "✅ Setup complete"
+
+install-deps:
+	python -m pip install --upgrade pip
 	pip install -r requirements.txt
-	pip install pytest pytest-cov flake8 black isort safety bandit mypy radon
 
-generate_data:
-	- python data/data_generator.py
+setup-data:
+	python data/data_generator.py
+	python data/load_data_to_db.py
 
-load_data_to_db:
-	- python data/load_data_to_db.py
+build:
+	docker compose -f $(DOCKER_COMPOSE_FILE) build
 
-create_table:
-	- PGPASSWORD=password psql -U postgres -d recommendation_system -f data/create_table.sql
+up:
+	docker compose -f $(DOCKER_COMPOSE_FILE) up -d
+	@echo "Services available:"
+	@echo "  - API: http://localhost:8000"
+	@echo "  - UI: http://localhost:8501"
+	@echo "  - Orchestrator: http://localhost:8003"
+	@echo "  - Prometheus: http://localhost:9090"
+	@echo "  - Grafana: http://localhost:3000"
 
-preprocess_data:
-	- python app/data_processing/data_preprocessor.py
+down:
+	docker compose -f $(DOCKER_COMPOSE_FILE) down
 
-api:
-	- python app/api/fastapi_server.py
+restart: down up
 
-streamlit:
-	- streamlit run app/streamlit_app/streamlit_ui.py
-
-run-api:
-	export PYTHONPATH=$$(pwd):$$PYTHONPATH && python app/api/fastapi_server.py
-
-run-streamlit:
-	export PYTHONPATH=$$(pwd):$$PYTHONPATH && streamlit run app/streamlit_app/streamlit_ui.py
-
-run-docker:
-	docker-compose up
+logs:
+	docker compose -f $(DOCKER_COMPOSE_FILE) logs -f
 
 test:
-	export PYTHONPATH=$$(pwd):$$PYTHONPATH && python -m pytest tests/ -v
-
-test-cov:
-	export PYTHONPATH=$$(pwd):$$PYTHONPATH && python -m pytest tests/ -v --cov=app --cov=ai --cov=config --cov=data --cov-report=xml --cov-report=term-missing
+	python -m pytest tests/ -v
 
 lint:
-	flake8 app/ ai/ config/ data/ --count --select=E9,F63,F7,F82 --show-source --statistics
-	flake8 app/ ai/ config/ data/ --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-	mypy app/ ai/ config/ data/ --ignore-missing-imports || true
+	flake8 app/ ai/ config/ data/ --max-line-length=100
+	pylint app/ ai/ config/ data/ --fail-under=8.0
 
 format:
-	black app/ ai/ config/ data/ tests/
-	isort app/ ai/ config/ data/ tests/
-
-format-check:
-	black --check app/ ai/ config/ data/ tests/
-	isort --check-only app/ ai/ config/ data/ tests/
-
-security:
-	safety check
-	bandit -r app/ ai/ config/ data/ -f json || true
-
-complexity:
-	radon cc app/ ai/ config/ data/ --min B
-	radon mi app/ ai/ config/ data/ --min B
-
-ci-local: format-check lint security test-cov complexity
-	@echo "✅ All CI checks passed locally!"
-
-build-images:
-	docker build -t recommendation-api:latest -f docker/Dockerfile.api .
-	docker build -t recommendation-streamlit:latest -f docker/Dockerfile.streamlit .
-
-k8s-deploy:
-	./kubernetes/manage.sh deploy
-
-k8s-status:
-	./kubernetes/manage.sh status
+	black app/ ai/ config/ data/
+	isort app/ ai/ config/ data/
 
 clean:
+	docker compose -f $(DOCKER_COMPOSE_FILE) down -v --remove-orphans
+	docker system prune -f
 	find . -type f -name "*.pyc" -delete
 	find . -type d -name "__pycache__" -delete
-	rm -rf .pytest_cache
-	rm -rf .coverage
-	rm -rf htmlcov/
-	rm -rf coverage.xml
-	rm -rf dist/
-	rm -rf build/
-	rm -rf *.egg-info
-	rm -rf .mypy_cache
 
-setup:
-	@echo "Setting up project..."
-	cp .env.example .env
-	@echo "Please edit .env file with your configuration"
-	@echo "Then run 'make install' to install dependencies"
+helm-deploy:
+	./kubernetes/deploy.sh deploy production
+
+helm-status:
+	./kubernetes/deploy.sh status
+
+helm-cleanup:
+	./kubernetes/deploy.sh cleanup
+
+quick-start: setup build up
+	@echo "🚀 ML Recommendation System ready!"

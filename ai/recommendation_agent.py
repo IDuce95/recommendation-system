@@ -12,6 +12,7 @@ from .graph_state import EnhancedGraphState
 from .model_manager import ModelManager
 from .mlflow_utils import MLflowRun, get_mlflow_tracker
 from config.prompt_config import PromptConfig
+from .rag_node import RAGNode, create_rag_node
 
 try:
     from app.api.prometheus_metrics import monitor_recommendation
@@ -23,15 +24,23 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
-
 class RecommendationAgent:
 
-    def __init__(self, model_manager: ModelManager, default_values: dict):
+    def __init__(self, model_manager: ModelManager, default_values: dict, enable_rag: bool = True):
         self.model_manager = model_manager
         self.default_values = default_values
         self.prompt_config = PromptConfig()
         self.agent_chain = None
         self.agent_graph = None
+        self.rag_node = None
+
+        if enable_rag:
+            try:
+                self.rag_node = create_rag_node()
+                logger.info("RAG node initialized successfully")
+            except Exception as e:
+                logger.warning(f"RAG node initialization failed: {e}")
+                self.rag_node = None
 
     def initialize(self):
         logger.info("Initializing recommendation agent")
@@ -83,13 +92,30 @@ class RecommendationAgent:
     def _create_enhanced_agent_graph(self):
         builder = StateGraph(state_schema=EnhancedGraphState)
 
+        def rag_retrieval_node(state: EnhancedGraphState) -> Dict:
+            if self.rag_node is None:
+                return {"rag_context": [], "rag_response": "RAG not available"}
+
+            try:
+                updated_state = self.rag_node.execute(state)
+                return {
+                    "rag_context": updated_state.rag_context,
+                    "rag_response": updated_state.rag_response,
+                    "rag_metadata": updated_state.rag_metadata
+                }
+            except Exception as e:
+                logger.error(f"RAG node execution failed: {e}")
+                return {"rag_context": [], "rag_response": f"RAG error: {e}"}
+
         def text_generation_node(state: EnhancedGraphState) -> Dict:
             recommended_products = state.get('recommended_products', pd.DataFrame())
             original_product = state.get('original_product', {})
+            rag_response = state.get('rag_response', '')
 
             input_dict = {
                 "recommended_products": recommended_products,
-                "original_product": original_product
+                "original_product": original_product,
+                "rag_context": rag_response
             }
 
             response = self.agent_chain.invoke(input_dict)
@@ -105,10 +131,12 @@ class RecommendationAgent:
 
             return {"formatted_response": formatted_response}
 
+        builder.add_node("rag_retrieval", rag_retrieval_node)
         builder.add_node("generate_text", text_generation_node)
         builder.add_node("format_images", image_formatting_node)
 
-        builder.add_edge(START, "generate_text")
+        builder.add_edge(START, "rag_retrieval")
+        builder.add_edge("rag_retrieval", "generate_text")
         builder.add_edge("generate_text", "format_images")
         builder.add_edge("format_images", END)
 
@@ -141,7 +169,7 @@ class RecommendationAgent:
             raise RuntimeError("Agent not initialized. Call initialize() first.")
 
         start_time = time.time()
-        
+
         try:
             with MLflowRun(run_name="recommendation_generation") as tracker:
                 tracker.log_params({
@@ -189,7 +217,7 @@ class RecommendationAgent:
                     })
             except:
                 pass  # Don't fail if MLflow logging fails
-            
+
             return {
                 "text": "Error generating recommendations",
                 "images": [],

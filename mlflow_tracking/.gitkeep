@@ -1,0 +1,10 @@
+# MLflow Tracking Directory
+
+Ten katalog przechowuje dane trackingu MLflow:
+- Metadata eksperymentów
+- Historie uruchomień
+- Konfiguracje modeli
+
+Katalog jest automatycznie tworzony przez MLflow tracking server.
+
+## Nie commituj zawartości tego katalogu - jest w .gitignore

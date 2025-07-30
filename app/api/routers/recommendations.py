@@ -15,15 +15,12 @@ logger = logging.getLogger(__name__)
 recommender = None
 recommendation_agent = None
 
-
 def setup_router_dependencies(recommender_instance, agent_instance):
     global recommender, recommendation_agent
     recommender = recommender_instance
     recommendation_agent = agent_instance
 
-
 router = APIRouter(prefix="/api", tags=["recommendations"])
-
 
 def _get_product_recommendations(
     product_id: int,
@@ -42,13 +39,11 @@ def _get_product_recommendations(
         image_weight=image_weight
     )
 
-
 def _create_system_message(selected_product: Dict) -> str:
     category = selected_product.get('category', DEFAULT_VALUES["unknown_category"])
     name = selected_product.get('name', DEFAULT_VALUES["unknown_product"])
     description = selected_product.get('description', '').replace('\n', ', ')
     return f"Generate recommendations for product:  \n{category} {name} ({description})"
-
 
 def _handle_empty_recommendations(system_message: str) -> RecommendationResponse:
     return RecommendationResponse(
@@ -59,12 +54,10 @@ def _handle_empty_recommendations(system_message: str) -> RecommendationResponse
         product_count=0
     )
 
-
 def _generate_ai_response(recommended_products: pd.DataFrame, original_product: Dict) -> Dict:
     return recommendation_agent.generate_recommendations(
         recommended_products, [], original_product
     )
-
 
 def _build_success_response(system_message: str, response_data: Dict) -> RecommendationResponse:
     images = []
@@ -82,7 +75,6 @@ def _build_success_response(system_message: str, response_data: Dict) -> Recomme
         images=images,
         product_count=response_data.get("product_count", 0)
     )
-
 
 @router.post(ENDPOINTS["recommendations"], response_model=RecommendationResponse)
 async def get_recommendations_endpoint(

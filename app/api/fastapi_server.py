@@ -16,8 +16,10 @@ from app.recommendation.recommender import Recommender
 from config.config_manager import get_config, setup_logging
 from ai import ModelManager, RecommendationAgent
 from app.api.routers.recommendations import router as recommendations_router, setup_router_dependencies
+from app.api.routers.rag import router as rag_router
 from app.api.config import DEFAULT_VALUES
 from app.api.prometheus_metrics import get_metrics, metrics_middleware
+from app.feature_store.integration import get_feature_store
 
 os.environ['CURL_CA_BUNDLE'] = ""
 
@@ -31,7 +33,6 @@ data_preprocessor = None
 recommender = None
 model_manager = None
 recommendation_agent = None
-
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -74,7 +75,6 @@ async def lifespan(app: FastAPI):
     yield
     logger.info("API closed.")
 
-
 app = FastAPI(
     title="Product Recommendation API",
     description="API for product recommendations with AI-powered suggestions",
@@ -85,12 +85,11 @@ app = FastAPI(
 app.middleware("http")(metrics_middleware)
 
 app.include_router(recommendations_router)
-
+app.include_router(rag_router)
 
 @app.get("/metrics")
 async def metrics():
     return get_metrics()
-
 
 @app.get("/health")
 async def health_check():
@@ -100,6 +99,15 @@ async def health_check():
         "version": "0.1.0"
     }
 
+@app.get("/feature-store/health")
+async def feature_store_health():
+    feature_store = get_feature_store()
+    return feature_store.health_check()
+
+@app.get("/feature-store/stats")
+async def feature_store_stats():
+    feature_store = get_feature_store()
+    return feature_store.get_feature_statistics()
 
 @app.get("/")
 async def root():
@@ -107,9 +115,9 @@ async def root():
         "message": "Welcome to Product Recommendation API",
         "docs": "/docs",
         "health": "/health",
+        "feature-store": "/feature-store/health",
         "version": "0.1.0"
     }
-
 
 if __name__ == "__main__":
     api_config = config.get_api_config()
