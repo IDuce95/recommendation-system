@@ -58,3 +58,5 @@ temp/
 build/
 dist/
 *.egg-info/
+
+todo.txt
