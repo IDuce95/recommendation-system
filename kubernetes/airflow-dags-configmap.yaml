@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: airflow-dags
+  namespace: recommendation-system
+data:
+  data_preprocessing_dag.py: |
+    # Content will be generated from app/airflow_dags/dags/
+  model_training_dag.py: |
+    # Content will be generated from app/airflow_dags/dags/
+  embeddings_generation_dag.py: |
+    # Content will be generated from app/airflow_dags/dags/

@@ -3,9 +3,11 @@ import logging
 import os
 import sys
 
+# sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__) ) ) )
+
 import pandas as pd
 import psycopg2
-from config import DB_LOADING_CONFIG, DB_LOADING_MESSAGES
+from constants import DB_LOADING_CONFIG, DB_LOADING_MESSAGES
 from psycopg2.extras import execute_values
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -16,7 +18,6 @@ db_config = config.get_database_config()
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
-
 
 def _read_and_validate_csv(
     csv_file_path: str,
@@ -35,7 +36,6 @@ def _read_and_validate_csv(
 
     return df
 
-
 def _clean_dataframe(
     df: pd.DataFrame,
 ) -> pd.DataFrame:
@@ -44,13 +44,11 @@ def _clean_dataframe(
     logger.info(f"Po czyszczeniu: {len(df)} rekordów gotowych do załadowania")
     return df
 
-
 def _establish_database_connection():
     logger.info("Łączenie z bazą danych PostgreSQL...")
     conn = psycopg2.connect(**db_config)
     cursor = conn.cursor()
     return conn, cursor
-
 
 def _truncate_table_if_needed(
     cursor,
@@ -74,6 +72,10 @@ def _insert_data_to_table(
     columns = df.columns.tolist()
     values = df.values.tolist()
 
+    insert_query = f"""
+        INSERT INTO {table_name} ({', '.join(columns)})
+        VALUES %s
+    """
 
     logger.info(f"Wstawianie {len(values)} rekordów do tabeli {table_name}...")
     execute_values(
@@ -96,7 +98,6 @@ def _verify_insertion(
     count = cursor.fetchone()[0]
     logger.info(f"Liczba rekordów w tabeli {table_name}: {count}")
 
-
 def _close_database_connection(
     cursor,
     conn,
@@ -106,7 +107,6 @@ def _close_database_connection(
     if conn:
         conn.close()
     logger.info("Połączenie z bazą danych zamknięte")
-
 
 def load_csv_to_database(
     csv_file_path: str,
@@ -133,7 +133,6 @@ def load_csv_to_database(
     finally:
         _close_database_connection(cursor, conn)
 
-
 def verify_data_load(
     table_name: str = 'products',
 ) -> None:
@@ -155,7 +154,6 @@ def verify_data_load(
             cursor.close()
         if 'conn' in locals():
             conn.close()
-
 
 if __name__ == "__main__":
     csv_file = "data/dataset.csv"

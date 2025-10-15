@@ -20,7 +20,6 @@ config = get_config()
 logging.basicConfig(level=getattr(logging, LOGGING_CONFIG["level"]), format=LOGGING_CONFIG["format"])
 logger = logging.getLogger(__name__)
 
-
 class DataLoader:
     def __init__(
         self,
@@ -65,7 +64,6 @@ class DataLoader:
             return None
         finally:
             self._disconnect_from_db()
-
 
 if __name__ == "__main__":
     data_loader = DataLoader()

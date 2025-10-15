@@ -37,17 +37,17 @@ load_environment() {
 
 setup_directories() {
     print_status "Setting up required directories..."
-    
+
     mkdir -p "$PROJECT_ROOT/logs/postgres"
     mkdir -p "$PROJECT_ROOT/logs/api"
     mkdir -p "$PROJECT_ROOT/logs/streamlit"
     mkdir -p "$PROJECT_ROOT/logs/mlflow"
     mkdir -p "$PROJECT_ROOT/logs/prometheus"
-    
+
     mkdir -p "$PROJECT_ROOT/mlflow_artifacts"
     mkdir -p "$PROJECT_ROOT/embeddings"
     mkdir -p "$PROJECT_ROOT/models"
-    
+
     if [ ! -d "/home/docker-volumes/postgres_data" ]; then
         print_status "Creating Docker volumes directory..."
         sudo mkdir -p /home/docker-volumes/postgres_data
@@ -72,11 +72,11 @@ cmd_up() {
     print_header "Starting Services"
     load_environment
     setup_directories
-    
+
     COMPOSE_CMD=$(get_docker_compose_cmd)
     cd "$PROJECT_ROOT"
     $COMPOSE_CMD up -d
-    
+
     print_status "Services started successfully!"
     print_status "Access points:"
     print_status "  - API: http://localhost:5000"
@@ -84,26 +84,26 @@ cmd_up() {
     print_status "  - MLflow: http://localhost:5555"
     print_status "  - Prometheus: http://localhost:9090"
     print_status "  - Grafana: http://localhost:3000 (admin/admin)"
-    print_status "  - Database: localhost:5432"
+    print_status "  - Database: localhost:5433"
 }
 
 cmd_down() {
     print_header "Stopping Services"
     load_environment
-    
+
     COMPOSE_CMD=$(get_docker_compose_cmd)
     cd "$PROJECT_ROOT"
     $COMPOSE_CMD down
-    
+
     print_status "Services stopped successfully!"
 }
 
 cmd_logs() {
     load_environment
-    
+
     COMPOSE_CMD=$(get_docker_compose_cmd)
     cd "$PROJECT_ROOT"
-    
+
     if [ -n "$2" ]; then
         $COMPOSE_CMD logs -f "$2"
     else
@@ -115,11 +115,11 @@ cmd_build() {
     print_header "Building Services"
     load_environment
     setup_directories
-    
+
     COMPOSE_CMD=$(get_docker_compose_cmd)
     cd "$PROJECT_ROOT"
     $COMPOSE_CMD build --no-cache
-    
+
     print_status "Build completed successfully!"
 }
 
@@ -131,7 +131,7 @@ cmd_restart() {
 
 cmd_status() {
     load_environment
-    
+
     COMPOSE_CMD=$(get_docker_compose_cmd)
     cd "$PROJECT_ROOT"
     $COMPOSE_CMD ps
@@ -140,16 +140,16 @@ cmd_status() {
 cmd_clean() {
     print_header "Cleaning Up"
     load_environment
-    
+
     COMPOSE_CMD=$(get_docker_compose_cmd)
     cd "$PROJECT_ROOT"
-    
+
     print_status "Stopping and removing containers..."
     $COMPOSE_CMD down -v --remove-orphans
-    
+
     print_status "Removing unused images..."
     docker image prune -f
-    
+
     print_status "Cleanup completed!"
 }
 

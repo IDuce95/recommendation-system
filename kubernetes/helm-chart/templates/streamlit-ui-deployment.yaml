@@ -1,0 +1,96 @@
+{{- if .Values.streamlitUi.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ml-recommendation-system.fullname" . }}-streamlit-ui
+  labels:
+    {{- include "ml-recommendation-system.labels" . | nindent 4 }}
+    app.kubernetes.io/component: streamlit-ui
+spec:
+  {{- if not .Values.streamlitUi.autoscaling.enabled }}
+  replicas: {{ .Values.streamlitUi.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "ml-recommendation-system.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: streamlit-ui
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- with .Values.streamlitUi.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "ml-recommendation-system.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: streamlit-ui
+    spec:
+      {{- with .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "ml-recommendation-system.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.streamlitUi.podSecurityContext | nindent 8 }}
+      containers:
+        - name: streamlit-ui
+          securityContext:
+            {{- toYaml .Values.streamlitUi.securityContext | nindent 12 }}
+          image: "{{ .Values.streamlitUi.image.registry }}/{{ .Values.streamlitUi.image.repository }}:{{ .Values.streamlitUi.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.streamlitUi.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.streamlitUi.service.port }}
+              protocol: TCP
+          env:
+            {{- include "ml-recommendation-system.commonEnv" . | nindent 12 }}
+            - name: COMPONENT_TYPE
+              value: "streamlit-ui"
+            - name: STREAMLIT_SERVER_PORT
+              value: {{ .Values.streamlitUi.service.port | quote }}
+            - name: RECOMMENDATION_API_URL
+              value: "http://{{ include "ml-recommendation-system.fullname" . }}-recommendation-api:{{ .Values.recommendationApi.service.port }}"
+            - name: AB_TESTING_SERVICE_URL
+              value: "http://{{ include "ml-recommendation-system.fullname" . }}-ab-testing:{{ .Values.abTestingService.service.port }}"
+            {{- with .Values.streamlitUi.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+          resources:
+            {{- toYaml .Values.streamlitUi.resources | nindent 12 }}
+          volumeMounts:
+            - name: config
+              mountPath: /app/config
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "ml-recommendation-system.fullname" . }}-config
+      {{- with .Values.streamlitUi.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.streamlitUi.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.streamlitUi.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

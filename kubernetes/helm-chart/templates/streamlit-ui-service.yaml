@@ -1,0 +1,19 @@
+{{- if .Values.streamlitUi.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "ml-recommendation-system.fullname" . }}-streamlit-ui
+  labels:
+    {{- include "ml-recommendation-system.labels" . | nindent 4 }}
+    app.kubernetes.io/component: streamlit-ui
+spec:
+  type: {{ .Values.streamlitUi.service.type }}
+  ports:
+    - port: {{ .Values.streamlitUi.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "ml-recommendation-system.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: streamlit-ui
+{{- end }}

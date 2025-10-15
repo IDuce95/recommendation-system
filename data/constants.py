@@ -29,7 +29,7 @@ DESCRIPTION_TEMPLATE = "screen [screen] inch\nmemory [memory] GB\nbattery [batte
 
 DB_CONFIG: Dict[str, Union[str, int]] = {
     'host': 'localhost',
-    'port': 5432,
+    'port': 5433,
     'user': 'postgres',
     'password': 'password',
     'database': 'recommendation_system'

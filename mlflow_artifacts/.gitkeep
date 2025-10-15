@@ -1,0 +1,11 @@
+# MLflow Artifacts Directory
+
+Ten katalog przechowuje artefakty MLflow:
+- Modele ML
+- Metryki eksperymentów  
+- Parametry treningów
+- Logi wykonania
+
+Katalog jest automatycznie tworzony przez MLflow tracking server.
+
+## Nie commituj zawartości tego katalogu - jest w .gitignore

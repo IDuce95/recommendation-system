@@ -14,7 +14,7 @@ import torch
 from langchain_huggingface import HuggingFaceEmbeddings
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
-from nltk.tokenize import word_tokenize
+# from nltk.tokenize import word_tokenize  # Tymczasowo wyłączone
 from PIL import Image
 from torchvision import models, transforms
 
@@ -24,7 +24,6 @@ from app.recommendation.similarity_calculator import CosineSimilarityCalculator
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
-
 
 class DataPreprocessor:
     def __init__(
@@ -53,10 +52,15 @@ class DataPreprocessor:
     ) -> str:
         text = text.lower()
         text = text.translate(str.maketrans('', '', string.punctuation))
-        tokens = word_tokenize(text)
-        tokens_without_stopwords = [token for token in tokens if token not in self.stop_words]
-        lemmatized_tokens = [self.lemmatizer.lemmatize(token) for token in tokens_without_stopwords]
-        return " ".join(lemmatized_tokens)
+        # Tymczasowo wyłączamy tokenization i lemmatization z powodu problemów z NLTK
+        # tokens = word_tokenize(text)
+        # tokens_without_stopwords = [token for token in tokens if token not in self.stop_words]
+        # lemmatized_tokens = [self.lemmatizer.lemmatize(token) for token in tokens_without_stopwords]
+        # return " ".join(lemmatized_tokens)
+        
+        # Uproszczone przetwarzanie tekstu
+        words = text.split()
+        return " ".join(words)
 
     def generate_text_embeddings(
         self,
@@ -144,7 +148,6 @@ class DataPreprocessor:
         text_similarity_matrix = similarity_calculator.calculate_similarity_matrix(self.text_embeddings)
         logger.info("Text similarity matrix generated using Cosine Similarity.")
         return text_similarity_matrix
-
 
 if __name__ == "__main__":
     loader = DataLoader()

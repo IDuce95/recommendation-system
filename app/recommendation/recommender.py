@@ -12,7 +12,6 @@ from app.recommendation.config import (
 logging.basicConfig(level=getattr(logging, LOGGING_CONFIG["level"]), format=LOGGING_CONFIG["format"])
 logger = logging.getLogger(__name__)
 
-
 class Recommender:
     def __init__(
         self,

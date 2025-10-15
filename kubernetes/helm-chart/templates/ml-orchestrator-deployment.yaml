@@ -1,0 +1,90 @@
+{{- if .Values.mlOrchestrator.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ml-recommendation-system.fullname" . }}-ml-orchestrator
+  labels:
+    {{- include "ml-recommendation-system.labels" . | nindent 4 }}
+    app.kubernetes.io/component: ml-orchestrator
+spec:
+  replicas: 1  # Orchestrator should be singleton
+  selector:
+    matchLabels:
+      {{- include "ml-recommendation-system.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: ml-orchestrator
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- with .Values.mlOrchestrator.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "ml-recommendation-system.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: ml-orchestrator
+    spec:
+      {{- with .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "ml-recommendation-system.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.mlOrchestrator.podSecurityContext | nindent 8 }}
+      containers:
+        - name: ml-orchestrator
+          securityContext:
+            {{- toYaml .Values.mlOrchestrator.securityContext | nindent 12 }}
+          image: "{{ .Values.mlOrchestrator.image.registry }}/{{ .Values.mlOrchestrator.image.repository }}:{{ .Values.mlOrchestrator.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.mlOrchestrator.image.pullPolicy }}
+          ports:
+            - name: metrics
+              containerPort: 9090
+              protocol: TCP
+          env:
+            {{- include "ml-recommendation-system.commonEnv" . | nindent 12 }}
+            - name: COMPONENT_TYPE
+              value: "ml-orchestrator"
+            - name: ORCHESTRATOR_MODE
+              value: "kubernetes"
+            {{- with .Values.mlOrchestrator.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: metrics
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: metrics
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+          resources:
+            {{- toYaml .Values.mlOrchestrator.resources | nindent 12 }}
+          volumeMounts:
+            - name: config
+              mountPath: /app/config
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "ml-recommendation-system.fullname" . }}-config
+      {{- with .Values.mlOrchestrator.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.mlOrchestrator.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.mlOrchestrator.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

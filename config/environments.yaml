@@ -2,10 +2,10 @@
 development:
   database:
     host: "localhost"
-    port: 5432
-    user: "postgres"
-    password: "password"
-    database: "recommendation_system"
+    port: 5433
+    user: "ml_user"
+    password: "ml_password"
+    database: "ml_system"
 
   api:
     host: "127.0.0.1"
@@ -21,7 +21,7 @@ development:
     tracking_uri: "http://localhost:5555"
     artifact_root: "./mlflow_artifacts"
     experiment_name: "recommendation_system_dev"
-    backend_store_uri: "postgresql://postgres:password@localhost:5432/recommendation_system"
+    backend_store_uri: "postgresql://ml_user:ml_password@localhost:5433/ml_system"
 
   model:
     name: "meta-llama/Llama-3.2-1B-Instruct"
@@ -43,10 +43,10 @@ development:
 production:
   database:
     host: "${DB_HOST:localhost}"
-    port: "${DB_PORT:5432}"
-    user: "${DB_USER:postgres}"
-    password: "${DB_PASSWORD}"
-    database: "${DB_NAME:recommendation_system}"
+    port: "${DB_PORT:5433}"
+    user: "${DB_USER:ml_user}"
+    password: "${DB_PASSWORD:ml_password}"
+    database: "${DB_NAME:ml_system}"
 
   api:
     host: "${API_HOST:0.0.0.0}"
@@ -59,10 +59,10 @@ production:
     port: "${STREAMLIT_PORT:8501}"
 
   mlflow:
-    tracking_uri: "${MLFLOW_TRACKING_URI:http://localhost:5555}"
+    tracking_uri: "${MLFLOW_TRACKING_URI:http://mlflow:5000}"
     artifact_root: "${MLFLOW_ARTIFACT_ROOT:./mlflow_artifacts}"
     experiment_name: "recommendation_system_prod"
-    backend_store_uri: "postgresql://${DB_USER:postgres}:${DB_PASSWORD}@${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:recommendation_system}"
+    backend_store_uri: "postgresql://${DB_USER:ml_user}:${DB_PASSWORD:ml_password}@${DB_HOST:postgres}:${DB_PORT:5432}/${DB_NAME:ml_system}"
 
   model:
     name: "${MODEL_NAME:meta-llama/Llama-3.2-1B-Instruct}"
@@ -79,7 +79,7 @@ production:
   logging:
     level: "${LOG_LEVEL:INFO}"
     format: "%(asctime)s - %(levelname)s - %(message)s"
-    file: "${LOG_FILE}"
+    file: "${LOG_FILE:null}"
 
   prometheus:
     port: 9090
@@ -103,7 +103,7 @@ production:
 test:
   database:
     host: "localhost"
-    port: 5432
+    port: 5433
     user: "test_user"
     password: "test_password"
     database: "test_recommendation_system"

@@ -1,0 +1,149 @@
+global:
+  imageRegistry: docker.io
+  imagePullSecrets: []
+
+app:
+  environment: production
+  debug: false
+  corsOrigins: ["*"]
+
+recommendationApi:
+  enabled: true
+  replicaCount: 2
+  image:
+    registry: docker.io
+    repository: recommendation-api
+    tag: latest
+    pullPolicy: IfNotPresent
+  workers: 4
+  batchSize: 32
+  service:
+    type: ClusterIP
+    port: 8000
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 80
+
+abTestingService:
+  enabled: true
+  replicaCount: 1
+  image:
+    registry: docker.io
+    repository: ab-testing-service
+    tag: latest
+    pullPolicy: IfNotPresent
+  confidenceLevel: 0.95
+  minSampleSize: 100
+  service:
+    type: ClusterIP
+    port: 8001
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: 500m
+      memory: 1Gi
+
+streamlitUi:
+  enabled: true
+  replicaCount: 1
+  image:
+    registry: docker.io
+    repository: streamlit-ui
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 8501
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 200m
+      memory: 512Mi
+
+mlOrchestrator:
+  enabled: true
+  image:
+    registry: docker.io
+    repository: ml-orchestrator
+    tag: latest
+    pullPolicy: IfNotPresent
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+
+featureStore:
+  ttl: 3600
+
+ingress:
+  enabled: false
+  className: nginx
+  hosts:
+    - host: ml-system.local
+      paths:
+        - path: /
+          pathType: Prefix
+
+models:
+  persistence:
+    enabled: true
+    size: 10Gi
+    accessModes:
+      - ReadWriteOnce
+
+monitoring:
+  enabled: true
+
+serviceAccount:
+  create: true
+  name: ""
+
+redis:
+  enabled: true
+  auth:
+    enabled: false
+  master:
+    persistence:
+      enabled: true
+      size: 8Gi
+
+kafka:
+  enabled: true
+  replicaCount: 1
+  persistence:
+    enabled: true
+    size: 8Gi
+
+postgresql:
+  enabled: true
+  auth:
+    database: ml_system
+    username: ml_user
+    password: ml_password
+  primary:
+    persistence:
+      enabled: true
+      size: 8Gi
+
+prometheus:
+  enabled: true
+
+grafana:
+  enabled: true

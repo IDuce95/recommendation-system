@@ -11,7 +11,6 @@ from config import (BATTERY_RANGE, BRANDS, CATEGORY, DATA_DIR, DESCRIPTION,
 
 logger = logging.getLogger(__name__)
 
-
 class DataGenerator:
     def __init__(
         self,
@@ -81,7 +80,6 @@ class DataGenerator:
             products.append(product)
 
         return pd.DataFrame(products)
-
 
 if __name__ == "__main__":
     data_generator = DataGenerator(num_products=NUM_PRODUCTS)

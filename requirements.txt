@@ -3,6 +3,8 @@ numpy
 nltk
 scikit-learn
 langchain
+langchain_huggingface
+langchain_community
 sentence-transformers
 flask
 fastapi
@@ -25,4 +27,14 @@ PyYAML>=6.0
 python-dotenv>=0.19.0
 
 gunicorn>=20.0.0
+
+chromadb>=0.4.15
+typing_extensions>=4.8.0
+
+# PySpark for distributed computing
+pyspark>=3.5.0
+
+# Redis for Feature Store
+redis>=5.0.0
+hiredis>=2.2.0
 

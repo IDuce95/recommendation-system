@@ -1,0 +1,101 @@
+{{- if .Values.recommendationApi.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "ml-recommendation-system.fullname" . }}-recommendation-api
+  labels:
+    {{- include "ml-recommendation-system.labels" . | nindent 4 }}
+    app.kubernetes.io/component: recommendation-api
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "ml-recommendation-system.fullname" . }}-recommendation-api
+  minReplicas: {{ .Values.recommendationApi.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.recommendationApi.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.recommendationApi.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.recommendationApi.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.recommendationApi.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.recommendationApi.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- end }}
+{{- end }}
+---
+{{- if .Values.abTestingService.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "ml-recommendation-system.fullname" . }}-ab-testing
+  labels:
+    {{- include "ml-recommendation-system.labels" . | nindent 4 }}
+    app.kubernetes.io/component: ab-testing
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "ml-recommendation-system.fullname" . }}-ab-testing
+  minReplicas: {{ .Values.abTestingService.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.abTestingService.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.abTestingService.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.abTestingService.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.abTestingService.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.abTestingService.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- end }}
+{{- end }}
+---
+{{- if .Values.streamlitUi.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "ml-recommendation-system.fullname" . }}-streamlit-ui
+  labels:
+    {{- include "ml-recommendation-system.labels" . | nindent 4 }}
+    app.kubernetes.io/component: streamlit-ui
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "ml-recommendation-system.fullname" . }}-streamlit-ui
+  minReplicas: {{ .Values.streamlitUi.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.streamlitUi.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.streamlitUi.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.streamlitUi.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.streamlitUi.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.streamlitUi.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- end }}
+{{- end }}

@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "ml-recommendation-system.fullname" . }}-config
+  labels:
+    {{- include "ml-recommendation-system.labels" . | nindent 4 }}
+data:
+  ml_system_config.yaml: |
+    environment: {{ .Values.app.environment }}
+    debug: {{ .Values.app.debug }}
+    
+    # Component Configuration
+    components:
+      feature_store:
+        enabled: true
+        redis_host: {{ include "ml-recommendation-system.fullname" . }}-redis-master
+        redis_port: 6379
+        redis_db: 0
+        ttl_seconds: {{ .Values.featureStore.ttl }}
+      
+      recommendation_api:
+        enabled: {{ .Values.recommendationApi.enabled }}
+        host: "0.0.0.0"
+        port: {{ .Values.recommendationApi.service.port }}
+        workers: {{ .Values.recommendationApi.workers }}
+        model_path: "/app/models"
+        kafka_topic: "user_interactions"
+        batch_size: {{ .Values.recommendationApi.batchSize }}
+      
+      ab_testing:
+        enabled: {{ .Values.abTestingService.enabled }}
+        port: {{ .Values.abTestingService.service.port }}
+        confidence_level: {{ .Values.abTestingService.confidenceLevel }}
+        min_sample_size: {{ .Values.abTestingService.minSampleSize }}
+        
+    # External Services
+    kafka:
+      bootstrap_servers: {{ include "ml-recommendation-system.kafkaServers" . }}
+      topics:
+        user_interactions: "user_interactions"
+        recommendations: "recommendations"
+        ab_test_events: "ab_test_events"
+    
+    redis:
+      url: {{ include "ml-recommendation-system.redisUrl" . }}
+      
+    database:
+      url: {{ include "ml-recommendation-system.postgresqlUrl" . }}
+      
+    # Monitoring
+    monitoring:
+      enabled: {{ .Values.monitoring.enabled }}
+      metrics_port: 9090
+      health_check_interval: 30
+      
+    # Model Configuration
+    models:
+      text_embedding:
+        model_name: "sentence-transformers/all-MiniLM-L6-v2"
+        cache_size: 1000
+      
+      collaborative_filtering:
+        algorithm: "matrix_factorization"
+        factors: 50
+        regularization: 0.01
+        
+    # Security
+    security:
+      api_key_header: "X-API-Key"
+      rate_limit_per_minute: 1000
+      cors_origins: {{ .Values.app.corsOrigins | toJson }}

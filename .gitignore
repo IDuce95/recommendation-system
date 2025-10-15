@@ -22,8 +22,6 @@ venv.bak/
 # Environments - IMPORTANT: Keep .env files private!
 .env
 .env.local
-.env.production
-.env.test
 
 # Project specific
 models_cache/
@@ -50,6 +48,7 @@ Thumbs.db
 # Model files
 *.bin
 *.safetensors
+
 
 # Temporary files
 tmp/

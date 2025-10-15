@@ -6,7 +6,6 @@ import streamlit as st
 
 logger = logging.getLogger(__name__)
 
-
 class RecommendationAPIClient:
 
     def __init__(self, base_url: str, endpoint: str):
