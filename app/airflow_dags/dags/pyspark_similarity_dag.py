@@ -387,24 +387,8 @@ generate_report_task = PythonOperator(
     - Compares different calculation methods
     - Logs performance metrics
     - Tracks processing statistics
+    """
+)
 
-This DAG demonstrates distributed similarity calculation using PySpark in Airflow.
-
-1. **Extract embeddings** from PostgreSQL database
-2. **Calculate similarities** using PySpark distributed computing
-3. **Store results** back to database with performance tracking
-4. **Generate report** comparing different methods
-
-- **Distributed Computing**: Uses PySpark for scalable similarity calculation
-- **Fallback Mechanism**: Falls back to pandas if PySpark unavailable
-- **Performance Tracking**: Compares PySpark vs pandas performance
-- **Batch Processing**: Efficient database operations with batching
-
-- Schedule: Daily (`@daily`)
-- Max Active Runs: 1 (prevents concurrent executions)
-- Retries: 1 with 5-minute delay
-
-- PostgreSQL connection: `postgres_default`
-- PySpark (optional, with pandas fallback)
-- Products table with embeddings
-"""
+# DAG Task Dependencies
+extract_embeddings_task >> calculate_similarity_task >> store_similarities_task >> generate_report_task

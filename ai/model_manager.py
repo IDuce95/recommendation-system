@@ -1,6 +1,6 @@
 import logging
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
-from langchain_community.llms import HuggingFacePipeline
+from langchain_huggingface import HuggingFacePipeline
 
 logger = logging.getLogger(__name__)
 

@@ -21,7 +21,7 @@ spec:
         - containerPort: 5000
         env:
         - name: DATABASE_URL
-          value: "postgresql://postgres:password123@postgres-service:5432/recommendation_db"
+          value: "postgresql://postgres:password123@postgres-service:5433/recommendation_db"
         - name: MLFLOW_TRACKING_URI
           value: "http://mlflow-service:5555"
         resources:

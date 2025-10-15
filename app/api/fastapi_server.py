@@ -8,7 +8,6 @@ sys.path.insert(0, project_root)
 import logging
 import uvicorn
 from fastapi import FastAPI
-from fastapi.middleware.base import BaseHTTPMiddleware
 
 from app.data_processing.data_loader import DataLoader
 from app.data_processing.data_preprocessor import DataPreprocessor

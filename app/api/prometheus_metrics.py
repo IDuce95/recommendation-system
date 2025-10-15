@@ -94,12 +94,12 @@ metrics = PrometheusMetrics()
 def monitor_recommendation(rec_type: str = "default"):
     def decorator(func):
         @wraps(func)
-        async def wrapper(*args, **kwargs):
+        def wrapper(*args, **kwargs):
             start_time = time.time()
             user_id = kwargs.get('user_id', 'unknown')
 
             try:
-                result = await func(*args, **kwargs)
+                result = func(*args, **kwargs)
                 duration = time.time() - start_time
                 metrics.record_recommendation(
                     str(user_id), rec_type, duration

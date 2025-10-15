@@ -3,9 +3,11 @@ import logging
 import os
 import sys
 
+# sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__) ) ) )
+
 import pandas as pd
 import psycopg2
-from config import DB_LOADING_CONFIG, DB_LOADING_MESSAGES
+from constants import DB_LOADING_CONFIG, DB_LOADING_MESSAGES
 from psycopg2.extras import execute_values
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -60,6 +62,7 @@ def _truncate_table_if_needed(
         conn.commit()
         logger.info("Tabela wyczyszczona")
 
+
 def _insert_data_to_table(
     cursor,
     conn,
@@ -68,6 +71,11 @@ def _insert_data_to_table(
 ) -> None:
     columns = df.columns.tolist()
     values = df.values.tolist()
+
+    insert_query = f"""
+        INSERT INTO {table_name} ({', '.join(columns)})
+        VALUES %s
+    """
 
     logger.info(f"Wstawianie {len(values)} rekordów do tabeli {table_name}...")
     execute_values(
@@ -80,6 +88,7 @@ def _insert_data_to_table(
 
     conn.commit()
     logger.info("Dane zostały pomyślnie załadowane do bazy danych")
+
 
 def _verify_insertion(
     cursor,

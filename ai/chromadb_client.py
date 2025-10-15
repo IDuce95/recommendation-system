@@ -1,19 +1,14 @@
 import chromadb
-from chromadb.config import Settings
+
 import pandas as pd
 from typing import List, Dict, Any, Optional
-import json
-import numpy as np
+
 
 class ChromaDBClient:
-    def __init__(self, host: str = "localhost", port: int = 8001):
+    def __init__(self, host: str = "localhost", port: int = 8000):
         self.client = chromadb.HttpClient(
             host=host,
             port=port,
-            settings=Settings(
-                chroma_client_auth_provider="chromadb.auth.token.TokenAuthClientProvider",
-                chroma_client_auth_credentials="test-token"
-            )
         )
         self.collections = {}
 

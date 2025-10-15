@@ -1,0 +1,62 @@
+global:
+  scrape_interval: 15s     # Jak często Prometheus ma zbierać metryki
+  evaluation_interval: 15s # Jak często Prometheus ma oceniać reguły alertów
+  scrape_timeout: 10s     # Timeout dla zapytań o metryki
+
+# Reguły alertów (opcjonalne, możesz je dodać później)
+rule_files:
+  # - "alert_rules.yml"
+
+scrape_configs:
+  # Monitorowanie API rekomendacji
+  - job_name: 'recommendation-api'
+    static_configs:
+      - targets: ['recommendation_api:8000']
+    metrics_path: '/metrics'
+    scheme: 'http'
+
+  # Monitorowanie Streamlit UI
+  - job_name: 'streamlit'
+    static_configs:
+      - targets: ['streamlit_ui:8501']
+    metrics_path: '/metrics'
+    scheme: 'http'
+
+  # Monitorowanie ML System Orchestrator
+  - job_name: 'ml-orchestrator'
+    static_configs:
+      - targets: ['ml_system_orchestrator:8003']
+    metrics_path: '/metrics'
+    scheme: 'http'
+
+  # Monitorowanie Redis
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis:6379']
+
+  # Monitorowanie PostgreSQL
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['postgres:5432']
+
+  # Monitorowanie Kafka
+  - job_name: 'kafka'
+    static_configs:
+      - targets: ['kafka:9092']
+
+  # Monitorowanie ChromaDB
+  - job_name: 'chromadb'
+    static_configs:
+      - targets: ['chromadb:8000']
+    metrics_path: '/metrics'
+    scheme: 'http'
+
+  # Monitorowanie samego Prometheusa
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Monitorowanie Zookeepera
+  - job_name: 'zookeeper'
+    static_configs:
+      - targets: ['zookeeper:2181']

@@ -77,7 +77,7 @@ def _build_success_response(system_message: str, response_data: Dict) -> Recomme
     )
 
 @router.post(ENDPOINTS["recommendations"], response_model=RecommendationResponse)
-async def get_recommendations_endpoint(
+def get_recommendations_endpoint(
     product_id: int = Body(..., title="Product ID"),
     top_n: int = Body(..., title="Number of Recommendations"),
     use_text_embeddings: bool = Body(DEFAULT_VALUES["use_text_embeddings"], title="Use Text Embeddings"),

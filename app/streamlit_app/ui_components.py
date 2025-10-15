@@ -74,7 +74,7 @@ class ProductSelectionUI:
     @staticmethod
     def create_product_selector(filtered_products: pd.DataFrame) -> str:
         product_options = [
-            f"{i + 1}. {filtered_products.iloc[i]['name']} ({filtered_products.iloc[i]['description'].replace('\n', ', ')})"
+            f"{i + 1}. {filtered_products.iloc[i]['name']} ({filtered_products.iloc[i]['description'].replace(chr(10), ', ')})"
             for i in range(len(filtered_products))
         ]
         return st.selectbox(

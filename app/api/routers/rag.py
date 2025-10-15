@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from typing import List, Dict, Optional
 from pydantic import BaseModel
 import logging
+import os
 
 from ai.rag_node import create_rag_node, RAGNode
 from ai.knowledge_base_generator import setup_fake_knowledge_base
@@ -30,7 +31,10 @@ def get_rag_node() -> RAGNode:
     global rag_node_instance
     if rag_node_instance is None:
         try:
-            rag_node_instance = create_rag_node()
+            # Use environment variables for ChromaDB connection in container
+            chroma_host = os.getenv("CHROMA_HOST", "chromadb")
+            chroma_port = int(os.getenv("CHROMA_PORT", "8000"))
+            rag_node_instance = create_rag_node(chroma_host=chroma_host, chroma_port=chroma_port)
         except Exception as e:
             logger.error(f"Failed to create RAG node: {e}")
             raise HTTPException(status_code=500, detail="RAG service unavailable")

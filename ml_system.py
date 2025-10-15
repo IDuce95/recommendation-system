@@ -8,10 +8,10 @@ from dataclasses import dataclass, asdict
 from contextlib import asynccontextmanager
 
 from app.feature_store import FeatureStore, FeatureStoreConfig
-from app.recommendation.recommender import RecommendationEngine
+from app.recommendation.recommender import Recommender as RecommendationEngine
 from app.ab_testing import ABTestingSystem, ABTestConfig
-from app.api.fastapi_server import create_app
-from app.streamlit_app.streamlit_ui import StreamlitApp
+# from app.api.fastapi_server import create_app  # Function doesn't exist, using app directly
+# from app.streamlit_app.streamlit_ui import StreamlitApp  # Not a class, commented out
 
 from config.config_manager import ConfigManager
 
@@ -56,7 +56,7 @@ class MLRecommendationSystem:
         self.recommendation_engine: Optional[RecommendationEngine] = None
         self.ab_testing_system: Optional[ABTestingSystem] = None
         self.fastapi_app = None
-        self.streamlit_app: Optional[StreamlitApp] = None
+        self.streamlit_app = None  # Optional[StreamlitApp] = None
 
         self.metrics = {
             "total_requests": 0,

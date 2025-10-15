@@ -12,7 +12,7 @@ def create_connections():
         login='postgres',
         password='password',
         schema='recommendation_system',
-        port=5432
+        port=5433
     )
 
     mlflow_conn = Connection(

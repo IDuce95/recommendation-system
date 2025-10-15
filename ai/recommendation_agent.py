@@ -1,4 +1,5 @@
 import logging
+import os
 from typing import Dict, List, Optional
 import time
 
@@ -36,7 +37,10 @@ class RecommendationAgent:
 
         if enable_rag:
             try:
-                self.rag_node = create_rag_node()
+                # Use environment variables for ChromaDB connection in container
+                chroma_host = os.getenv("CHROMA_HOST", "localhost")
+                chroma_port = int(os.getenv("CHROMA_PORT", "8000"))
+                self.rag_node = create_rag_node(chroma_host=chroma_host, chroma_port=chroma_port)
                 logger.info("RAG node initialized successfully")
             except Exception as e:
                 logger.warning(f"RAG node initialization failed: {e}")

@@ -76,7 +76,7 @@ Common environment variables
 - name: KAFKA_BOOTSTRAP_SERVERS
   value: {{ include "ml-recommendation-system.fullname" . }}-kafka:9092
 - name: DATABASE_URL
-  value: postgresql://{{ .Values.postgresql.auth.username }}:{{ .Values.postgresql.auth.password }}@{{ include "ml-recommendation-system.fullname" . }}-postgresql:5432/{{ .Values.postgresql.auth.database }}
+  value: postgresql://{{ .Values.postgresql.auth.username }}:{{ .Values.postgresql.auth.password }}@{{ include "ml-recommendation-system.fullname" . }}-postgresql:5433/{{ .Values.postgresql.auth.database }}
 {{- end }}
 
 {{/*
@@ -124,7 +124,7 @@ Create PostgreSQL connection string
 */}}
 {{- define "ml-recommendation-system.postgresqlUrl" -}}
 {{- if .Values.postgresql.enabled }}
-postgresql://{{ .Values.postgresql.auth.username }}:{{ .Values.postgresql.auth.password }}@{{ include "ml-recommendation-system.fullname" . }}-postgresql:5432/{{ .Values.postgresql.auth.database }}
+postgresql://{{ .Values.postgresql.auth.username }}:{{ .Values.postgresql.auth.password }}@{{ include "ml-recommendation-system.fullname" . }}-postgresql:5433/{{ .Values.postgresql.auth.database }}
 {{- else }}
 {{ .Values.externalPostgresql.url }}
 {{- end }}

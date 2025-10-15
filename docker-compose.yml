@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # Infrastructure Services
   redis:
@@ -24,17 +22,25 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
     volumes:
       - zookeeper_data:/var/lib/zookeeper/data
       - zookeeper_logs:/var/lib/zookeeper/log
     networks:
       - ml_network
+    healthcheck:
+      test: ["CMD-SHELL", "echo 'ruok' | nc localhost 2181 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   kafka:
     image: confluentinc/cp-kafka:7.4.0
     container_name: ml_system_kafka
     depends_on:
-      - zookeeper
+      zookeeper:
+        condition: service_healthy
     ports:
       - "9092:9092"
       - "9093:9093"
@@ -66,7 +72,7 @@ services:
       POSTGRES_USER: ml_user
       POSTGRES_PASSWORD: ml_password
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./data/create_table.sql:/docker-entrypoint-initdb.d/01-init.sql
@@ -77,6 +83,29 @@ services:
       retries: 3
     networks:
       - ml_network
+
+  # ChromaDB Service
+  chromadb:
+    image: ghcr.io/chroma-core/chroma:0.6.4.dev283
+    container_name: ml_system_chromadb
+    volumes:
+      - chroma_data:/data
+    ports:
+      - "8001:8000"
+    environment:
+      - ALLOW_RESET=true
+      - ANONYMIZED_TELEMETRY=false
+      - CHROMA_SERVER_HOST=0.0.0.0
+      - CHROMA_SERVER_PORT=8000
+      - CHROMA_SERVER_HTTP_PORT=8000
+      - PERSIST_DIRECTORY=/data
+    networks:
+      - ml_network
+    # healthcheck:
+    #   test: ["CMD-SHELL", "curl -sf http://0.0.0.0:8000/api/v1/heartbeat || exit 1"]
+    #   interval: 10s
+    #   timeout: 5s
+    #   retries: 5
 
   # ML System Services
   recommendation_api:
@@ -89,8 +118,10 @@ services:
         condition: service_healthy
       kafka:
         condition: service_healthy
+      # chromadb:
+      #   condition: service_healthy
     ports:
-      - "8000:8000"
+      - "8000:5000"
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
@@ -99,6 +130,14 @@ services:
       - ENVIRONMENT=production
       - FASTAPI_HOST=0.0.0.0
       - FASTAPI_PORT=8000
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=ml_user
+      - DB_PASSWORD=ml_password
+      - DB_NAME=ml_system
+      - MODEL_NAME=microsoft/DialoGPT-medium
+      - CHROMA_HOST=chromadb
+      - CHROMA_PORT=8000
     volumes:
       - ./data:/app/data
       - ./models:/app/models
@@ -106,7 +145,7 @@ services:
     networks:
       - ml_network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      test: ["CMD", "curl", "-f", "http://0.0.0.0:5000/health"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -119,16 +158,31 @@ services:
     depends_on:
       recommendation_api:
         condition: service_healthy
+      postgres:
+        condition: service_healthy
     ports:
       - "8501:8501"
     environment:
-      - RECOMMENDATION_API_URL=http://recommendation_api:8000
+      - ENVIRONMENT=production
+      - RECOMMENDATION_API_URL=http://recommendation_api:5000
       - STREAMLIT_HOST=0.0.0.0
       - STREAMLIT_PORT=8501
+      - API_HOST=recommendation_api
+      - API_PORT=5000
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=ml_user
+      - DB_PASSWORD=ml_password
+      - DB_NAME=ml_system
     volumes:
       - ./data:/app/data
     networks:
       - ml_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://0.0.0.0:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   # ML System Orchestrator
   ml_system_orchestrator:
@@ -152,6 +206,11 @@ services:
       - DATABASE_URL=postgresql://ml_user:ml_password@postgres:5432/ml_system
       - ENVIRONMENT=production
       - DEBUG_MODE=false
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=ml_user
+      - DB_PASSWORD=ml_password
+      - DB_NAME=ml_system
     volumes:
       - ./data:/app/data
       - ./models:/app/models
@@ -159,10 +218,183 @@ services:
     networks:
       - ml_network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8003/health"]
+      test: ["CMD", "curl", "-f", "http://0.0.0.0:8003/health"]
       interval: 30s
       timeout: 10s
       retries: 3
+
+  # MLflow Tracking Server
+  mlflow:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.mlflow-simple
+    container_name: ml_system_mlflow
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "5555:5000"
+    environment:
+      - MLFLOW_BACKEND_STORE_URI=postgresql://ml_user:ml_password@postgres:5432/mlflow_db
+      - MLFLOW_DEFAULT_ARTIFACT_ROOT=/mlflow/artifacts
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=ml_user
+      - POSTGRES_PASSWORD=ml_password
+      - POSTGRES_DB=mlflow_db
+    volumes:
+      - mlflow_artifacts:/mlflow/artifacts
+      - mlflow_data:/mlflow/data
+    command: >
+      mlflow server
+      --host 0.0.0.0
+      --port 5000
+      --backend-store-uri postgresql://ml_user:ml_password@postgres:5432/mlflow_db
+      --default-artifact-root /mlflow/artifacts
+      --serve-artifacts
+      --artifacts-destination /mlflow/artifacts
+    networks:
+      - ml_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Apache Airflow Services
+  airflow-webserver:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.airflow
+    container_name: ml_system_airflow_webserver
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - ./docker/.env.airflow
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://ml_user:ml_password@postgres/airflow_db
+    volumes:
+      - ./app/airflow_dags/dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./data:/opt/airflow/data
+    ports:
+      - "8080:8080"
+    command: webserver
+    networks:
+      - ml_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  airflow-scheduler:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.airflow
+    container_name: ml_system_airflow_scheduler
+    depends_on:
+      postgres:
+        condition: service_healthy
+      airflow-webserver:
+        condition: service_started
+    env_file:
+      - ./docker/.env.airflow
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://ml_user:ml_password@postgres/airflow_db
+    volumes:
+      - ./app/airflow_dags/dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./data:/opt/airflow/data
+    command: scheduler
+    networks:
+      - ml_network
+    healthcheck:
+      test: ["CMD-SHELL", "airflow jobs check --job-type SchedulerJob"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  airflow-init:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.airflow
+    container_name: ml_system_airflow_init
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - ./docker/.env.airflow
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://ml_user:ml_password@postgres/airflow_db
+    volumes:
+      - ./app/airflow_dags/dags:/opt/airflow/dags
+    command: >
+      bash -c "
+        airflow db reset -y &&
+        airflow db init &&
+        airflow users create --username admin --firstname Admin --lastname User --role Admin --email admin@example.com --password admin || true
+      "
+    networks:
+      - ml_network
+    restart: "no"
+
+  # PySpark Service for Distributed Computing
+  pyspark-master:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.pyspark-simple
+    container_name: ml_system_pyspark_master
+    ports:
+      - "4040:4040"  # Spark UI
+      - "7077:7077"  # Spark Master
+    environment:
+      - SPARK_MODE=master
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./spark_checkpoints:/app/spark_checkpoints
+    command: /opt/spark/bin/spark-class org.apache.spark.deploy.master.Master
+    networks:
+      - ml_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4040"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  pyspark-worker:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.pyspark-simple
+    container_name: ml_system_pyspark_worker
+    depends_on:
+      pyspark-master:
+        condition: service_started
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://pyspark-master:7077
+      - SPARK_WORKER_MEMORY=2G
+      - SPARK_WORKER_CORES=2
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./spark_checkpoints:/app/spark_checkpoints
+    command: /opt/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://pyspark-master:7077
+    networks:
+      - ml_network
 
   # Monitoring Services
   prometheus:
@@ -182,6 +414,11 @@ services:
       - '--web.enable-lifecycle'
     networks:
       - ml_network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://0.0.0.0:9090/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   grafana:
     image: grafana/grafana:latest
@@ -196,6 +433,11 @@ services:
       - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources
     networks:
       - ml_network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://0.0.0.0:3000/api/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
 # Volumes for data persistence
 volumes:
@@ -206,6 +448,10 @@ volumes:
   postgres_data:
   prometheus_data:
   grafana_data:
+  chroma_data:
+  mlflow_artifacts:
+  mlflow_data:
+  spark_checkpoints:
 
 # Network for service communication
 networks:
@@ -213,4 +459,4 @@ networks:
     driver: bridge
     ipam:
       config:
-        - subnet: 172.20.0.0/16
+        - subnet: 172.28.0.0/16

@@ -1,4 +1,4 @@
-FROM chromadb/chroma:latest
+FROM chromadb/chroma:0.6.4.dev283
 
 WORKDIR /chroma
 

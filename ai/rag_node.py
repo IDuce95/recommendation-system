@@ -234,7 +234,7 @@ class RAGNode:
         except Exception as e:
             print(f"Error updating user context: {e}")
 
-def create_rag_node(chroma_host: str = "localhost", chroma_port: int = 8001) -> RAGNode:
+def create_rag_node(chroma_host: str = "localhost", chroma_port: int = 8000) -> RAGNode:
     try:
         chroma_client = ChromaDBClient(host=chroma_host, port=chroma_port)
         rag_node = RAGNode(chroma_client)

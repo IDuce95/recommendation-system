@@ -8,7 +8,6 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     build-essential \
     curl \
-    software-properties-common \
     git \
     wget \
     && rm -rf /var/lib/apt/lists/*
@@ -24,6 +23,11 @@ COPY requirements.txt .
 # Upgrade pip and install Python dependencies
 RUN pip install --upgrade pip \
     && pip install --no-cache-dir -r requirements.txt
+
+# Download NLTK data (all common packages to avoid multiple rebuilds)
+RUN python -c "import nltk; \
+    packages = ['stopwords', 'punkt_tab', 'punkt', 'wordnet', 'omw-1.4', 'averaged_perceptron_tagger']; \
+    [nltk.download(pkg, download_dir='/usr/local/nltk_data') for pkg in packages]"
 
 # Copy application code
 COPY . .

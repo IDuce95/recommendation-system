@@ -20,7 +20,7 @@ spec:
         - containerPort: 5555
         env:
         - name: MLFLOW_BACKEND_STORE_URI
-          value: "postgresql://postgres:password123@postgres-service:5432/recommendation_db"
+          value: "postgresql://postgres:password123@postgres-service:5433/recommendation_db"
         - name: MLFLOW_DEFAULT_ARTIFACT_ROOT
           value: "/mlflow/artifacts"
         command:
@@ -31,7 +31,7 @@ spec:
         - --port
         - "5555"
         - --backend-store-uri
-        - "postgresql://postgres:password123@postgres-service:5432/recommendation_db"
+        - "postgresql://postgres:password123@postgres-service:5433/recommendation_db"
         - --default-artifact-root
         - "/mlflow/artifacts"
         volumeMounts:

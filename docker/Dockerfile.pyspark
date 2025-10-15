@@ -3,7 +3,7 @@
 # Ten Dockerfile tworzy środowisko z PySpark do distributed computing.
 # Bazuje na oficjalnym obrazie Spark z Python support.
 
-FROM apache/spark-py:v3.5.0
+FROM apache/spark:3.5.0-python3
 
 # Switch to root for installations
 USER root

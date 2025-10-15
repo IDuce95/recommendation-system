@@ -183,7 +183,11 @@ class FakeKnowledgeBaseGenerator:
 
 def setup_fake_knowledge_base():
     try:
-        chroma_client = ChromaDBClient(host="localhost", port=8001)
+        import os
+        # Use environment variables for ChromaDB connection in container
+        chroma_host = os.getenv("CHROMA_HOST", "localhost")
+        chroma_port = int(os.getenv("CHROMA_PORT", "8001"))
+        chroma_client = ChromaDBClient(host=chroma_host, port=chroma_port)
         generator = FakeKnowledgeBaseGenerator()
 
         result = generator.populate_chromadb(chroma_client, num_products=200, num_users=100)

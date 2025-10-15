@@ -14,7 +14,7 @@ import torch
 from langchain_huggingface import HuggingFaceEmbeddings
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
-from nltk.tokenize import word_tokenize
+# from nltk.tokenize import word_tokenize  # Tymczasowo wyłączone
 from PIL import Image
 from torchvision import models, transforms
 
@@ -52,10 +52,15 @@ class DataPreprocessor:
     ) -> str:
         text = text.lower()
         text = text.translate(str.maketrans('', '', string.punctuation))
-        tokens = word_tokenize(text)
-        tokens_without_stopwords = [token for token in tokens if token not in self.stop_words]
-        lemmatized_tokens = [self.lemmatizer.lemmatize(token) for token in tokens_without_stopwords]
-        return " ".join(lemmatized_tokens)
+        # Tymczasowo wyłączamy tokenization i lemmatization z powodu problemów z NLTK
+        # tokens = word_tokenize(text)
+        # tokens_without_stopwords = [token for token in tokens if token not in self.stop_words]
+        # lemmatized_tokens = [self.lemmatizer.lemmatize(token) for token in tokens_without_stopwords]
+        # return " ".join(lemmatized_tokens)
+        
+        # Uproszczone przetwarzanie tekstu
+        words = text.split()
+        return " ".join(words)
 
     def generate_text_embeddings(
         self,

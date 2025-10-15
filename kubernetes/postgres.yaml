@@ -17,7 +17,7 @@ spec:
       - name: postgres
         image: postgres:15
         ports:
-        - containerPort: 5432
+        - containerPort: 5433
         envFrom:
         - configMapRef:
             name: postgres-config
@@ -61,6 +61,6 @@ spec:
   selector:
     app: postgres
   ports:
-  - port: 5432
-    targetPort: 5432
+  - port: 5433
+    targetPort: 5433
   type: ClusterIP

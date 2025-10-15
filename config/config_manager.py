@@ -68,10 +68,11 @@ class ConfigManager:
                 if env_value is None:
                     raise ValueError(f"Environment variable '{var_expr}' is required but not set")
 
-            return self._convert_type(env_value)
+            return str(env_value)
 
         if '${' in value:
-            return re.sub(pattern, replace_var, value)
+            substituted = re.sub(pattern, replace_var, value)
+            return self._convert_type(substituted)
         return self._convert_type(value)
 
     def _convert_type(self, value: str) -> Union[str, int, float, bool]:

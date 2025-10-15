@@ -3,6 +3,8 @@ numpy
 nltk
 scikit-learn
 langchain
+langchain_huggingface
+langchain_community
 sentence-transformers
 flask
 fastapi
